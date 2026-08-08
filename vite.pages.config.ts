@@ -16,7 +16,7 @@ export default defineConfig(({ mode }) => {
     plugins: [react()],
     define: {
       "process.env.NEXT_PUBLIC_SHEET_API_URL": JSON.stringify(
-        env.NEXT_PUBLIC_SHEET_API_URL ?? ""
+        process.env.NEXT_PUBLIC_SHEET_API_URL ?? env.NEXT_PUBLIC_SHEET_API_URL ?? ""
       ),
     },
     build: {

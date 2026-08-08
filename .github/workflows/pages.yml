@@ -32,6 +32,8 @@ jobs:
 
       - name: Build static site
         run: npm run build:pages
+        env:
+          NEXT_PUBLIC_SHEET_API_URL: https://script.google.com/macros/s/AKfycbx62z6tDoWxPTEMLU8sUf3MActrFnQ81zyQ13lWwBm01BEW_NMA8tDcOdvNObF9ohbj5A/exec
 
       - name: Configure Pages
         uses: actions/configure-pages@v5
