@@ -22,8 +22,6 @@ type CaseMedia = {
   kind?: "image" | "drive-video";
 };
 
-const SHEET_URL =
-  "https://docs.google.com/spreadsheets/d/1GIYgRjDdqRQ7qh9YaT6hT_gtPSgiLsR11C0RngMyGg4/edit";
 const REPORT_URL =
   "https://docs.google.com/document/d/1TyENXPJIeK8O9Wt1Me9GLUVq78ISxm8qvqvCOm0FqsA/edit";
 const TECH_URL = "https://fudy-paper-structure.vercel.app/";
@@ -804,7 +802,6 @@ function MainContent() {
         <p>選擇族群展開需求　｜　選擇關鍵情境聚焦對應內容　｜　再按一次取消　｜　Esc 關閉詳情</p>
         <div>
           <span className="footer-team">打包一個家：未來生活的防災避難創新設計</span>
-          <a href={SHEET_URL} target="_blank" rel="noreferrer">資料來源 ↗</a>
         </div>
       </footer>
 
