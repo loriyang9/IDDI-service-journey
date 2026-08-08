@@ -26,6 +26,7 @@ const REPORT_URL =
   "https://docs.google.com/document/d/1TyENXPJIeK8O9Wt1Me9GLUVq78ISxm8qvqvCOm0FqsA/edit";
 const TECH_URL = "https://fudy-paper-structure.vercel.app/";
 const PET_STATUS = "寵物防災避難現況";
+const MATERIAL_STATUS = "物資派發現況";
 
 const CASE_MEDIA: Record<string, CaseMedia[]> = {
   M01: [
@@ -62,6 +63,18 @@ const CASE_MEDIA: Record<string, CaseMedia[]> = {
     {
       src: "cases/m04d-disaster-veterinary-support.webp",
       alt: "災後動物醫療支援現場",
+    },
+  ],
+  M22: [
+    {
+      src: "https://drive.google.com/file/d/18ge4336t42nMNN_vuIW-WwE6R8LGeGXo/preview",
+      alt: "物資領取、分類與入住分派現場第一段影片",
+      kind: "drive-video",
+    },
+    {
+      src: "https://drive.google.com/file/d/1G6S6PjmMIyAW-HYasyLMGSWrTtPojWY4/preview",
+      alt: "物資分派動線、人員協作與物資陳列現場第二段影片",
+      kind: "drive-video",
     },
   ],
 };
@@ -438,8 +451,17 @@ function MainContent() {
       matchesChallenge(record["對應設計挑戰"] ?? "", activeChallenge ?? "")
   );
   const petStatusSelected = activeScenario === "K01" && activeChallenge === PET_STATUS;
+  const materialStatusSelected = activeScenario === "K04" && activeChallenge === MATERIAL_STATUS;
+  const contextStatus = activeScenario === "K01"
+    ? PET_STATUS
+    : activeScenario === "K04"
+      ? MATERIAL_STATUS
+      : null;
+  const contextStatusSelected = petStatusSelected || materialStatusSelected;
   const activeChallengeDescription = petStatusSelected
     ? "以台灣防災演練中的寵物收容區現況為背景，觀察分區、動線、物資、籠具、照護及人寵共處等現場條件。"
+    : materialStatusSelected
+      ? "以防災演練中的物資領取、分類與入住分派流程為背景，觀察分派動線、人員協作、物資陳列，以及大量資訊與物資下的操作負荷。"
     : challengeItems.find((item) => item.title === activeChallenge)?.description ||
       activeChallengeSheetDetail?.["一句說明（網站草稿）"] ||
       "";
@@ -451,6 +473,13 @@ function MainContent() {
             return (
               record["內容層級"] === "情境現場" &&
               matchesChallenge(record["對應設計挑戰"] ?? "", PET_STATUS)
+            );
+          }
+          if (materialStatusSelected) {
+            return (
+              record["素材ID"] === "M22" &&
+              record["內容層級"] === "情境現場" &&
+              matchesChallenge(record["對應設計挑戰"] ?? "", MATERIAL_STATUS)
             );
           }
           return (
@@ -596,19 +625,19 @@ function MainContent() {
             </div>
             <div className="scenario-columns">
               <section>
-                {activeScenario === "K01" && (
+                {contextStatus && (
                   <div className="scenario-context-control">
                     <h3>背景與現況</h3>
                     <ol>
                       <li>
                         <button
                           type="button"
-                          className={`challenge-button ${petStatusSelected ? "is-selected" : ""}`}
-                          aria-expanded={petStatusSelected}
-                          onClick={() => setActiveChallenge(petStatusSelected ? null : PET_STATUS)}
+                          className={`challenge-button ${contextStatusSelected ? "is-selected" : ""}`}
+                          aria-expanded={contextStatusSelected}
+                          onClick={() => setActiveChallenge(contextStatusSelected ? null : contextStatus)}
                         >
-                          <span>{PET_STATUS}</span>
-                          <span aria-hidden="true">{petStatusSelected ? "−" : "＋"}</span>
+                          <span>{contextStatus}</span>
+                          <span aria-hidden="true">{contextStatusSelected ? "−" : "＋"}</span>
                         </button>
                       </li>
                     </ol>
@@ -857,14 +886,14 @@ function MainContent() {
             <div className="case-modal-topline">
               <div>
                 <span>{activeScenarioData["情境名稱"]}</span>
-                <span>{petStatusSelected ? "背景與現況" : "設計挑戰"}</span>
+                <span>{contextStatusSelected ? "背景與現況" : "設計挑戰"}</span>
               </div>
               <button type="button" onClick={() => setActiveChallenge(null)} aria-label="關閉現場與案例">×</button>
             </div>
             <div className="case-modal-content">
               <div className="case-panel-heading">
                 <div>
-                  <p>{petStatusSelected ? "現況觀察" : "現場與案例"}</p>
+                  <p>{contextStatusSelected ? "現況觀察" : "現場與案例"}</p>
                   <h2 id="case-modal-title">{activeChallenge}</h2>
                 </div>
               </div>
@@ -878,7 +907,7 @@ function MainContent() {
                       <CaseMediaGallery record={record} />
                       <div className="case-card-body">
                         <div className="case-meta">
-                          <span>{petStatusSelected ? "現況案例" : record["內容層級"]}</span>
+                          <span>{contextStatusSelected ? "現況案例" : record["內容層級"]}</span>
                         </div>
                         <h3>{record["卡片標題"]}</h3>
                         <p>{record["一句說明（網站草稿）"]}</p>
