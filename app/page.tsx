@@ -67,7 +67,7 @@ const CASE_MEDIA: Record<string, CaseMedia[]> = {
   ],
   M18: [
     {
-      src: "https://www.youtube-nocookie.com/embed/nXvwt1GKw5Q?rel=0",
+      src: "https://www.youtube-nocookie.com/embed/nXvwt1GKw5Q?start=59&rel=0",
       alt: "停水後仰賴簡易廁所的避難現場報導",
       kind: "youtube-video",
     },
