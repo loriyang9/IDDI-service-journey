@@ -85,6 +85,9 @@ const GROUP_LABELS: Record<string, string> = {
   PET_COMMON: "寵物家庭共通",
 };
 
+const PET_GROUP_IDS = ["G04", "G05", "G06"];
+const PET_SHARED_SCENE_ID = "C03";
+
 const SCENARIO_COLORS: Record<string, string> = {
   K01: "#6B5B3E",
   K02: "#3D6B8F",
@@ -304,9 +307,11 @@ function MainContent() {
   ).flatMap((group) => group.members);
 
   const displayedGroupIds =
-    activeScenario === "K04" && visibleGroupIds.some((id) => ["G04", "G05", "G06"].includes(id))
-      ? [...visibleGroupIds.filter((id) => !["G04", "G05", "G06"].includes(id)), "PET_COMMON"]
+    activeScenario === "K04" && visibleGroupIds.some((id) => PET_GROUP_IDS.includes(id))
+      ? [...visibleGroupIds.filter((id) => !PET_GROUP_IDS.includes(id)), "PET_COMMON"]
       : visibleGroupIds;
+  const showPetSpeciesRows = PET_GROUP_IDS.every((id) => displayedGroupIds.includes(id));
+  const standardGroupIds = displayedGroupIds.filter((id) => !PET_GROUP_IDS.includes(id));
 
   const scenarioStyle = activeScenario
     ? ({
@@ -337,7 +342,7 @@ function MainContent() {
       return records.find(
         (record) =>
           record["場景ID"] === sceneId &&
-          ["G04", "G05", "G06"].includes(record["族群ID"]) &&
+          PET_GROUP_IDS.includes(record["族群ID"]) &&
           (!activeScenario || record["關鍵情境ID"] === activeScenario)
       );
     }
@@ -363,6 +368,63 @@ function MainContent() {
     return records.find(
       (record) => record["場景ID"] === sceneId && record["場景需求摘要"]
     )?.["場景需求摘要"] ?? "";
+  }
+
+  function petFieldIsShared(sceneId: string, field: string) {
+    if (sceneId !== PET_SHARED_SCENE_ID) return false;
+    const values = PET_GROUP_IDS.map((groupId) => recordFor(sceneId, groupId)?.[field] ?? "");
+    return Boolean(values[0]) && values.every((value) => value === values[0]);
+  }
+
+  function renderPetRows(field: string, provider = false) {
+    return (
+      <div className={`pet-group-grid ${provider ? "pet-provider-grid" : ""}`}>
+        {PET_GROUP_IDS.map((groupId, rowIndex) => (
+          <div
+            className="row-label"
+            key={`${field}-label-${groupId}`}
+            style={{ gridColumn: 1, gridRow: rowIndex + 1 }}
+          >
+            {GROUP_LABELS[groupId]}{provider ? "因應策略" : ""}
+          </div>
+        ))}
+
+        {scenes.flatMap((scene, sceneIndex) => {
+          const sceneId = scene["場景ID"];
+          const gridColumn = sceneIndex + 2;
+          if (petFieldIsShared(sceneId, field)) {
+            const record = recordFor(sceneId, PET_GROUP_IDS[0]);
+            return [
+              <DataCard
+                key={`${field}-${sceneId}-pet-common`}
+                content={record?.[field]}
+                muted={isRecordMuted(record)}
+                related={isRecordRelated(record)}
+                scenarioColor={activeScenario ? SCENARIO_COLORS[activeScenario] : undefined}
+                provider={provider}
+                className="pet-shared-card"
+                layoutStyle={{ gridColumn, gridRow: "1 / span 3" }}
+              />,
+            ];
+          }
+
+          return PET_GROUP_IDS.map((groupId, rowIndex) => {
+            const record = recordFor(sceneId, groupId);
+            return (
+              <DataCard
+                key={`${field}-${sceneId}-${groupId}`}
+                content={record?.[field]}
+                muted={isRecordMuted(record)}
+                related={isRecordRelated(record)}
+                scenarioColor={activeScenario ? SCENARIO_COLORS[activeScenario] : undefined}
+                provider={provider}
+                layoutStyle={{ gridColumn, gridRow: rowIndex + 1 }}
+              />
+            );
+          });
+        })}
+      </div>
+    );
   }
 
   const activeScenarioData = scenarios.find(
@@ -657,7 +719,7 @@ function MainContent() {
               <div className="section-caption group-caption">不同族群需求</div>
             )}
 
-            {displayedGroupIds.map((groupId) => (
+            {standardGroupIds.map((groupId) => (
               <FlowRow label={GROUP_LABELS[groupId]} key={`need-${groupId}`} className="group-row">
                 {scenes.map((scene) => {
                   const record = recordFor(scene["場景ID"], groupId);
@@ -674,6 +736,8 @@ function MainContent() {
                 })}
               </FlowRow>
             ))}
+
+            {showPetSpeciesRows && renderPetRows("族群需求")}
 
             {displayedGroupIds.length > 0 && (
               <div className="section-caption provider-caption">服務提供者需求</div>
@@ -709,7 +773,7 @@ function MainContent() {
               ))}
             </FlowRow>
 
-            {displayedGroupIds.map((groupId) => (
+            {standardGroupIds.map((groupId) => (
               <FlowRow
                 label={`${GROUP_LABELS[groupId]}因應策略`}
                 key={`provider-${groupId}`}
@@ -730,6 +794,8 @@ function MainContent() {
                 })}
               </FlowRow>
             ))}
+
+            {showPetSpeciesRows && renderPetRows("服務端挑戰／考量重點（AI草稿）", true)}
           </div>
         </div>
       </section>
@@ -915,18 +981,34 @@ function DataCard({
   related,
   scenarioColor,
   provider = false,
+  className = "",
+  layoutStyle,
 }: {
   content?: string;
   muted: boolean;
   related: boolean;
   scenarioColor?: string;
   provider?: boolean;
+  className?: string;
+  layoutStyle?: React.CSSProperties;
 }) {
-  if (!content) return <div className={`data-card is-empty ${muted ? "is-muted" : ""}`} aria-hidden="true" />;
+  const style = {
+    ...(scenarioColor ? { "--scenario-color": scenarioColor } : {}),
+    ...layoutStyle,
+  } as React.CSSProperties;
+  if (!content) {
+    return (
+      <div
+        className={`data-card is-empty ${className} ${muted ? "is-muted" : ""}`}
+        style={style}
+        aria-hidden="true"
+      />
+    );
+  }
   return (
     <article
-      className={`data-card ${provider ? "provider-data-card" : ""} ${related ? "is-related" : ""} ${muted ? "is-muted" : ""}`}
-      style={scenarioColor ? ({ "--scenario-color": scenarioColor } as React.CSSProperties) : undefined}
+      className={`data-card ${provider ? "provider-data-card" : ""} ${className} ${related ? "is-related" : ""} ${muted ? "is-muted" : ""}`}
+      style={style}
     >
       <ul>
         {splitLines(content).map((item) => <li key={item}>{item}</li>)}
