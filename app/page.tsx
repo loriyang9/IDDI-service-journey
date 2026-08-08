@@ -19,7 +19,7 @@ type MediaRecord = Record<string, string>;
 type CaseMedia = {
   src: string;
   alt: string;
-  kind?: "image" | "drive-video";
+  kind?: "image" | "drive-video" | "youtube-video";
 };
 
 const REPORT_URL =
@@ -63,6 +63,13 @@ const CASE_MEDIA: Record<string, CaseMedia[]> = {
     {
       src: "cases/m04d-disaster-veterinary-support.webp",
       alt: "災後動物醫療支援現場",
+    },
+  ],
+  M18: [
+    {
+      src: "https://www.youtube-nocookie.com/embed/nXvwt1GKw5Q?rel=0",
+      alt: "停水後仰賴簡易廁所的避難現場報導",
+      kind: "youtube-video",
     },
   ],
   M22: [
@@ -949,12 +956,12 @@ function CaseMediaGallery({ record }: { record: MediaRecord }) {
   return (
     <div className="case-media-gallery">
       <figure>
-        {current.kind === "drive-video" ? (
+        {current.kind === "drive-video" || current.kind === "youtube-video" ? (
           <iframe
             src={current.src}
             title={current.alt}
             loading="lazy"
-            allow="autoplay; fullscreen"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
             allowFullScreen
           />
         ) : (
