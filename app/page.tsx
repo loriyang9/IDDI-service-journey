@@ -22,8 +22,7 @@ type CaseMedia = {
   kind?: "image" | "drive-video" | "youtube-video";
 };
 
-const REPORT_URL =
-  "https://docs.google.com/document/d/1TyENXPJIeK8O9Wt1Me9GLUVq78ISxm8qvqvCOm0FqsA/edit";
+const REPORT_URL = "https://disaster-study2026.vercel.app/";
 const TECH_URL = "https://fudy-paper-structure.vercel.app/";
 const PET_STATUS = "寵物防災避難現況";
 const MATERIAL_STATUS = "物資派發現況";
