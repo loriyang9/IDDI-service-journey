@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import fallbackData from "./data/sheet-fallback.json";
 import mediaFallback from "./data/media-fallback.json";
 import sceneDetail from "./data/scene-detail.json";
+import audienceStageDetails from "./data/audience-stage-details.json";
 
 type Cell = string | number | boolean | null | undefined;
 type SheetBlock = { range?: string; values: Cell[][] };
@@ -21,6 +22,29 @@ type CaseMedia = {
   alt: string;
   kind?: "image" | "drive-video" | "youtube-video";
 };
+
+type StageKey = "prep" | "response" | "shelter" | "recovery";
+type AudienceStageSource = {
+  no: string;
+  name: string;
+  time: string;
+  focus: string;
+  phaseDescription: string;
+  illustration: string | null;
+  summary: string;
+  details: string[];
+  example: string | null;
+  exampleImages: string[];
+  sources: { label: string; url: string }[];
+};
+type AudienceSource = {
+  id: string;
+  label: string;
+  subLabel: string;
+  accent: string;
+  stages: Record<StageKey, AudienceStageSource>;
+};
+type OpenAudienceStage = { audienceId: string; stageKey: StageKey };
 
 const REPORT_URL = "https://disaster-study2026.vercel.app/";
 const TECH_URL = "https://fudy-paper-structure.vercel.app/";
@@ -104,6 +128,32 @@ const GROUP_LABELS: Record<string, string> = {
 
 const PET_GROUP_IDS = ["G04", "G05", "G06"];
 const PET_SHARED_SCENE_ID = "C03";
+
+const AUDIENCE_SOURCES = audienceStageDetails as AudienceSource[];
+const AUDIENCE_ID_BY_GROUP: Record<string, string> = {
+  G01: "elderly",
+  G02: "multicultural",
+  G03: "family",
+  G04: "pets",
+  G05: "pets",
+  G06: "pets",
+  PET_COMMON: "pets",
+};
+const STAGE_BY_SCENE: Record<string, StageKey> = {
+  C01: "prep",
+  C02: "prep",
+  C03: "response",
+  C04: "response",
+  C05: "response",
+  C06: "shelter",
+  C07: "recovery",
+};
+const STAGE_CLUSTERS: { key: StageKey; start: number; span: number }[] = [
+  { key: "prep", start: 2, span: 2 },
+  { key: "response", start: 4, span: 3 },
+  { key: "shelter", start: 7, span: 1 },
+  { key: "recovery", start: 8, span: 1 },
+];
 
 const SCENARIO_COLORS: Record<string, string> = {
   K01: "#6B5B3E",
@@ -220,6 +270,8 @@ function MainContent() {
   const [activeScenario, setActiveScenario] = useState<string | null>(null);
   const [activeChallenge, setActiveChallenge] = useState<string | null>(null);
   const [openScene, setOpenScene] = useState<string | null>(null);
+  const [openAudienceStage, setOpenAudienceStage] = useState<OpenAudienceStage | null>(null);
+  const [hoveredAudienceStage, setHoveredAudienceStage] = useState<string | null>(null);
 
   useEffect(() => {
     const endpoint = process.env.NEXT_PUBLIC_SHEET_API_URL;
@@ -292,9 +344,10 @@ function MainContent() {
     function onKeyDown(event: KeyboardEvent) {
       if (event.key === "Escape") {
         if (activeChallenge) setActiveChallenge(null);
+        else if (openAudienceStage) setOpenAudienceStage(null);
         else if (openScene) setOpenScene(null);
       }
-      if (!activeChallenge && openScene && (event.key === "ArrowLeft" || event.key === "ArrowRight")) {
+      if (!activeChallenge && !openAudienceStage && openScene && (event.key === "ArrowLeft" || event.key === "ArrowRight")) {
         const index = sceneIds.indexOf(openScene);
         const offset = event.key === "ArrowLeft" ? -1 : 1;
         setOpenScene(sceneIds[(index + offset + sceneIds.length) % sceneIds.length]);
@@ -302,16 +355,16 @@ function MainContent() {
     }
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [activeChallenge, openScene, sceneIds]);
+  }, [activeChallenge, openAudienceStage, openScene, sceneIds]);
 
   useEffect(() => {
-    if (!openScene && !activeChallenge) return;
+    if (!openScene && !openAudienceStage && !activeChallenge) return;
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     return () => {
       document.body.style.overflow = previousOverflow;
     };
-  }, [activeChallenge, openScene]);
+  }, [activeChallenge, openAudienceStage, openScene]);
 
   const contextMembers = activeScenario
     ? scenarioMembers(records, activeScenario)
@@ -393,7 +446,44 @@ function MainContent() {
     return Boolean(values[0]) && values.every((value) => value === values[0]);
   }
 
+  function audienceStageKey(groupId: string, sceneId: string) {
+    const audienceId = AUDIENCE_ID_BY_GROUP[groupId];
+    const stageKey = STAGE_BY_SCENE[sceneId];
+    return audienceId && stageKey ? `${audienceId}-${stageKey}` : null;
+  }
+
+  function openAudienceStageFor(groupId: string, sceneId: string) {
+    const audienceId = AUDIENCE_ID_BY_GROUP[groupId];
+    const stageKey = STAGE_BY_SCENE[sceneId];
+    if (audienceId && stageKey) setOpenAudienceStage({ audienceId, stageKey });
+  }
+
+  function audienceStageAriaLabel(groupId: string, sceneId: string) {
+    const audienceId = AUDIENCE_ID_BY_GROUP[groupId];
+    const stageKey = STAGE_BY_SCENE[sceneId];
+    const audience = AUDIENCE_SOURCES.find((item) => item.id === audienceId);
+    return `展開${audience?.label ?? GROUP_LABELS[groupId]}${audience?.stages[stageKey]?.name ?? ""}詳細情境`;
+  }
+
+  function stageOutlines(audienceId: string, petGrid = false) {
+    return STAGE_CLUSTERS.map((cluster) => {
+      const key = `${audienceId}-${cluster.key}`;
+      return (
+        <span
+          aria-hidden="true"
+          className={`audience-stage-outline ${hoveredAudienceStage === key ? "is-visible" : ""}`}
+          key={`outline-${key}`}
+          style={{
+            gridColumn: `${cluster.start} / span ${cluster.span}`,
+            gridRow: petGrid ? "1 / span 3" : 1,
+          }}
+        />
+      );
+    });
+  }
+
   function renderPetRows(field: string, provider = false) {
+    const interactive = !provider;
     return (
       <div className={`pet-group-grid ${provider ? "pet-provider-grid" : ""}`}>
         {PET_GROUP_IDS.map((groupId, rowIndex) => (
@@ -406,9 +496,12 @@ function MainContent() {
           </div>
         ))}
 
+        {interactive && stageOutlines("pets", true)}
+
         {scenes.flatMap((scene, sceneIndex) => {
           const sceneId = scene["場景ID"];
           const gridColumn = sceneIndex + 2;
+          const interactionKey = audienceStageKey("G04", sceneId);
           if (petFieldIsShared(sceneId, field)) {
             const record = recordFor(sceneId, PET_GROUP_IDS[0]);
             return [
@@ -421,6 +514,14 @@ function MainContent() {
                 provider={provider}
                 className="pet-shared-card"
                 layoutStyle={{ gridColumn, gridRow: "1 / span 3" }}
+                interactive={interactive}
+                showArrow={interactive}
+                ariaLabel={interactive ? audienceStageAriaLabel("G04", sceneId) : undefined}
+                onClick={interactive ? () => openAudienceStageFor("G04", sceneId) : undefined}
+                onMouseEnter={interactive && interactionKey ? () => setHoveredAudienceStage(interactionKey) : undefined}
+                onMouseLeave={interactive ? () => setHoveredAudienceStage(null) : undefined}
+                onFocus={interactive && interactionKey ? () => setHoveredAudienceStage(interactionKey) : undefined}
+                onBlur={interactive ? () => setHoveredAudienceStage(null) : undefined}
               />,
             ];
           }
@@ -436,6 +537,14 @@ function MainContent() {
                 scenarioColor={activeScenario ? SCENARIO_COLORS[activeScenario] : undefined}
                 provider={provider}
                 layoutStyle={{ gridColumn, gridRow: rowIndex + 1 }}
+                interactive={interactive}
+                showArrow={interactive}
+                ariaLabel={interactive ? audienceStageAriaLabel(groupId, sceneId) : undefined}
+                onClick={interactive ? () => openAudienceStageFor(groupId, sceneId) : undefined}
+                onMouseEnter={interactive && interactionKey ? () => setHoveredAudienceStage(interactionKey) : undefined}
+                onMouseLeave={interactive ? () => setHoveredAudienceStage(null) : undefined}
+                onFocus={interactive && interactionKey ? () => setHoveredAudienceStage(interactionKey) : undefined}
+                onBlur={interactive ? () => setHoveredAudienceStage(null) : undefined}
               />
             );
           });
@@ -497,6 +606,12 @@ function MainContent() {
     : [];
   const activeScene = scenes.find((scene) => scene["場景ID"] === openScene);
   const openIndex = openScene ? sceneIds.indexOf(openScene) : -1;
+  const activeAudienceSource = openAudienceStage
+    ? AUDIENCE_SOURCES.find((audience) => audience.id === openAudienceStage.audienceId)
+    : null;
+  const activeAudienceStage = activeAudienceSource && openAudienceStage
+    ? activeAudienceSource.stages[openAudienceStage.stageKey]
+    : null;
 
   return (
     <main data-source={dataSource}>
@@ -754,9 +869,11 @@ function MainContent() {
 
             {standardGroupIds.map((groupId) => (
               <FlowRow label={GROUP_LABELS[groupId]} key={`need-${groupId}`} className="group-row">
-                {scenes.map((scene) => {
+                {stageOutlines(AUDIENCE_ID_BY_GROUP[groupId])}
+                {scenes.map((scene, sceneIndex) => {
                   const record = recordFor(scene["場景ID"], groupId);
                   const content = record?.["族群需求"];
+                  const interactionKey = audienceStageKey(groupId, scene["場景ID"]);
                   return (
                     <DataCard
                       key={`${scene["場景ID"]}-${groupId}`}
@@ -764,6 +881,15 @@ function MainContent() {
                       muted={isRecordMuted(record)}
                       related={isRecordRelated(record)}
                       scenarioColor={activeScenario ? SCENARIO_COLORS[activeScenario] : undefined}
+                      layoutStyle={{ gridColumn: sceneIndex + 2, gridRow: 1 }}
+                      interactive
+                      showArrow
+                      ariaLabel={audienceStageAriaLabel(groupId, scene["場景ID"])}
+                      onClick={() => openAudienceStageFor(groupId, scene["場景ID"])}
+                      onMouseEnter={interactionKey ? () => setHoveredAudienceStage(interactionKey) : undefined}
+                      onMouseLeave={() => setHoveredAudienceStage(null)}
+                      onFocus={interactionKey ? () => setHoveredAudienceStage(interactionKey) : undefined}
+                      onBlur={() => setHoveredAudienceStage(null)}
                     />
                   );
                 })}
@@ -874,6 +1000,73 @@ function MainContent() {
               <span>{openIndex + 1} / {sceneIds.length}</span>
               <button type="button" onClick={() => setOpenScene(sceneIds[(openIndex + 1) % sceneIds.length])}>下一個場景 →</button>
             </div>
+          </article>
+        </div>
+      )}
+
+      {activeAudienceSource && activeAudienceStage && openAudienceStage && (
+        <div className="modal-veil" role="presentation" onMouseDown={(event) => {
+          if (event.target === event.currentTarget) setOpenAudienceStage(null);
+        }}>
+          <article
+            className="scene-modal audience-stage-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="audience-stage-modal-title"
+            style={{ "--audience-accent": activeAudienceSource.accent } as React.CSSProperties}
+          >
+            <div className="modal-topline audience-stage-topline">
+              <div>
+                <span>{activeAudienceSource.label}</span>
+                <span>{activeAudienceStage.time}</span>
+              </div>
+              <button type="button" onClick={() => setOpenAudienceStage(null)} aria-label="關閉族群詳細情境">×</button>
+            </div>
+            <div className="modal-heading audience-stage-heading">
+              <h2 id="audience-stage-modal-title">{activeAudienceStage.no}　{activeAudienceStage.name}</h2>
+              <p>{activeAudienceStage.focus}</p>
+            </div>
+            {activeAudienceStage.illustration && (
+              <div className="audience-stage-illustration">
+                <img
+                  src={activeAudienceStage.illustration}
+                  alt={`${activeAudienceSource.label} - ${activeAudienceStage.name}情境示意圖`}
+                />
+              </div>
+            )}
+            <section className="modal-section audience-stage-content">
+              <p className="audience-stage-summary">{activeAudienceStage.summary}</p>
+              <ul>
+                {activeAudienceStage.details.map((item) => (
+                  <li key={item}>{item}</li>
+                ))}
+              </ul>
+            </section>
+            {activeAudienceStage.example && (
+              <section className="audience-stage-example">
+                <p>{activeAudienceStage.example}</p>
+                {activeAudienceStage.exampleImages.length > 0 && (
+                  <div className={`audience-stage-example-images ${activeAudienceStage.exampleImages.length === 1 ? "is-single" : ""}`}>
+                    {activeAudienceStage.exampleImages.map((image, index) => (
+                      <img
+                        src={image}
+                        alt={`${activeAudienceSource.label} - ${activeAudienceStage.name}補充案例圖 ${index + 1}`}
+                        key={image}
+                      />
+                    ))}
+                  </div>
+                )}
+                {activeAudienceStage.sources.length > 0 && (
+                  <div className="audience-stage-sources">
+                    {activeAudienceStage.sources.map((source) => (
+                      <a href={source.url} target="_blank" rel="noreferrer" key={`${source.label}-${source.url}`}>
+                        {source.label}<span aria-hidden="true"> ↗</span>
+                      </a>
+                    ))}
+                  </div>
+                )}
+              </section>
+            )}
           </article>
         </div>
       )}
@@ -1015,6 +1208,14 @@ function DataCard({
   provider = false,
   className = "",
   layoutStyle,
+  interactive = false,
+  showArrow = false,
+  ariaLabel,
+  onClick,
+  onMouseEnter,
+  onMouseLeave,
+  onFocus,
+  onBlur,
 }: {
   content?: string;
   muted: boolean;
@@ -1023,11 +1224,43 @@ function DataCard({
   provider?: boolean;
   className?: string;
   layoutStyle?: React.CSSProperties;
+  interactive?: boolean;
+  showArrow?: boolean;
+  ariaLabel?: string;
+  onClick?: React.MouseEventHandler<HTMLButtonElement>;
+  onMouseEnter?: React.MouseEventHandler<HTMLButtonElement>;
+  onMouseLeave?: React.MouseEventHandler<HTMLButtonElement>;
+  onFocus?: React.FocusEventHandler<HTMLButtonElement>;
+  onBlur?: React.FocusEventHandler<HTMLButtonElement>;
 }) {
   const style = {
     ...(scenarioColor ? { "--scenario-color": scenarioColor } : {}),
     ...layoutStyle,
   } as React.CSSProperties;
+  const classes = `data-card ${provider ? "provider-data-card" : ""} ${interactive ? "audience-detail-card" : ""} ${className} ${related ? "is-related" : ""} ${muted ? "is-muted" : ""} ${!content ? "is-empty" : ""}`;
+  if (interactive) {
+    return (
+      <button
+        type="button"
+        className={classes}
+        style={style}
+        aria-label={ariaLabel}
+        disabled={muted}
+        onClick={onClick}
+        onMouseEnter={onMouseEnter}
+        onMouseLeave={onMouseLeave}
+        onFocus={onFocus}
+        onBlur={onBlur}
+      >
+        {content && (
+          <ul>
+            {splitLines(content).map((item) => <li key={item}>{item}</li>)}
+          </ul>
+        )}
+        {showArrow && <span className="expand-corner" aria-hidden="true">↗</span>}
+      </button>
+    );
+  }
   if (!content) {
     return (
       <div
@@ -1039,7 +1272,7 @@ function DataCard({
   }
   return (
     <article
-      className={`data-card ${provider ? "provider-data-card" : ""} ${className} ${related ? "is-related" : ""} ${muted ? "is-muted" : ""}`}
+      className={classes}
       style={style}
     >
       <ul>

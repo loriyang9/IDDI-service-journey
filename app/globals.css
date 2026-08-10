@@ -120,12 +120,19 @@ h1 { margin: 0; font-size: clamp(36px, 2.6vw, 44px); line-height: 1.12; letter-s
 .expand-corner { position: absolute; right: 11px; bottom: 9px; color: var(--cut); font: 14px/1 var(--mono); opacity: .8; }
 .section-caption { position: sticky; left: 0; z-index: 9; display: flex; justify-content: center; width: 148px; margin-top: 28px; padding: 10px; color: var(--cut); text-align: center; font: 14px/1.4 var(--mono); letter-spacing: .08em; background: var(--wash); }
 .group-row { min-height: 132px; margin-top: 10px; }
+.group-row, .pet-group-grid { position: relative; }
 .pet-group-grid { display: grid; grid-template-columns: 148px repeat(7, minmax(0, 1fr)); grid-template-rows: repeat(3, minmax(132px, auto)); column-gap: 8px; row-gap: 10px; align-items: stretch; margin-top: 10px; }
 .pet-provider-grid { grid-template-rows: repeat(3, minmax(148px, auto)); }
 .pet-group-grid > :not(.row-label) { min-width: 0; }
 .pet-shared-card { display: flex; align-items: center; }
 .pet-shared-card > ul { width: 100%; }
 .data-card { position: relative; padding: 16px 15px 18px; background: var(--paper); border: 0; transition: opacity .2s, background .2s, box-shadow .2s; }
+.audience-detail-card { appearance: none; width: auto; color: inherit; font: inherit; text-align: left; cursor: pointer; z-index: 1; }
+.audience-detail-card:focus-visible { outline: 2px solid var(--crease); outline-offset: -3px; }
+.audience-detail-card:disabled { cursor: default; }
+.audience-stage-outline { z-index: 6; min-width: 0; margin: 3px; border: 1.5px solid var(--cut); opacity: 0; pointer-events: none; transition: opacity .14s ease; }
+.audience-stage-outline.is-visible { opacity: 1; }
+.audience-detail-card .expand-corner { z-index: 7; }
 .data-card ul { font-size: 16px; line-height: 1.58; }
 .data-card li { position: relative; padding-left: 16px; margin-bottom: 7px; }
 .is-empty { background: rgba(255,255,255,.36); }
@@ -168,6 +175,28 @@ h1 { margin: 0; font-size: clamp(36px, 2.6vw, 44px); line-height: 1.12; letter-s
 .modal-nav button { border: 0; background: transparent; color: var(--ink2); cursor: pointer; font-size: 15px; }
 .modal-nav button:hover { color: var(--cut); }
 .modal-nav span { color: var(--ink3); font: 14px/1.4 var(--mono); }
+
+.audience-stage-modal { --audience-accent: var(--cut); }
+.audience-stage-topline > div { display: flex; flex-wrap: wrap; gap: 8px; }
+.audience-stage-topline > div span { padding: 5px 9px; background: color-mix(in srgb, var(--audience-accent) 12%, white); color: var(--audience-accent); font-size: 12px; font-weight: 700; letter-spacing: 0; }
+.audience-stage-heading { padding-bottom: 20px; }
+.audience-stage-heading h2 { margin: 0; }
+.audience-stage-heading p { margin: 9px 0 0; color: var(--ink3); font: 14px/1.5 var(--sans); }
+.audience-stage-illustration { display: flex; justify-content: center; width: 100%; overflow: hidden; background: var(--wash); border: 1px solid color-mix(in srgb, var(--audience-accent) 35%, var(--rule)); }
+.audience-stage-illustration img { display: block; width: 100%; height: auto; object-fit: contain; }
+.audience-stage-content { margin-top: 22px; }
+.audience-stage-summary { margin: 0 0 20px; color: var(--ink); font-size: 17px; font-weight: 700; line-height: 1.6; }
+.audience-stage-content > ul { margin: 0; padding: 0; list-style: none; }
+.audience-stage-content > ul li { position: relative; padding-left: 20px; margin-bottom: 13px; font-size: 17px; line-height: 1.78; }
+.audience-stage-content > ul li::before { content: ""; position: absolute; left: 0; top: .82em; width: 7px; height: 7px; border-radius: 50%; background: var(--audience-accent); }
+.audience-stage-example { margin-top: 2px; padding: 18px; background: var(--wash); }
+.audience-stage-example > p { margin: 0; color: var(--ink2); font-size: 15.5px; line-height: 1.65; }
+.audience-stage-example-images { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 14px; }
+.audience-stage-example-images.is-single { grid-template-columns: minmax(0, 1fr); }
+.audience-stage-example-images img { display: block; width: 100%; height: auto; object-fit: contain; border: 1px solid var(--rule); }
+.audience-stage-sources { display: flex; flex-wrap: wrap; gap: 8px 18px; margin-top: 14px; padding-top: 13px; border-top: 1px solid var(--rule); }
+.audience-stage-sources a { color: var(--audience-accent); font-size: 13px; line-height: 1.5; }
+.audience-stage-sources a:hover { color: var(--cut); }
 
 .case-modal-veil { z-index: 110; }
 .case-modal { width: min(1240px, 100%); max-height: 90vh; overflow-y: auto; overscroll-behavior-y: contain; background: var(--wash); border: 1px solid var(--ink); }
@@ -255,6 +284,12 @@ button:focus-visible, a:focus-visible, select:focus-visible, summary:focus-visib
   .scene-modal { width: 100%; height: 100dvh; max-height: none; overflow-y: auto; overscroll-behavior-y: contain; touch-action: pan-y; border: 0; padding: 22px 20px 26px; }
   .modal-heading h2 { font-size: 30px; }
   .modal-section > ul li, .what-if-section p { font-size: 16px; }
+  .audience-stage-topline { align-items: start; }
+  .audience-stage-heading h2 { font-size: 29px; }
+  .audience-stage-heading p { font-size: 13.5px; }
+  .audience-stage-summary, .audience-stage-content > ul li { font-size: 16px; }
+  .audience-stage-example-images, .audience-stage-example-images.is-single { grid-template-columns: minmax(0, 1fr); }
+  .audience-stage-example-images img { max-height: none; }
   .case-modal { width: 100%; height: 100dvh; max-height: none; border: 0; }
   .case-modal-topline { padding: 13px 16px; }
   .case-modal-topline > div { display: grid; gap: 3px; }

@@ -1,0 +1,383 @@
+[
+  {
+    "id": "elderly",
+    "label": "高齡者",
+    "subLabel": "與行動不便者",
+    "accent": "#B8842E",
+    "stages": {
+      "prep": {
+        "no": "01",
+        "name": "備災期",
+        "time": "時間：災前",
+        "focus": "物資儲備空間收納 ・ 教育推行與減災演練",
+        "phaseDescription": "災前準備期：完成收容地點評估、設備全面檢查與防災演練，並更新造冊避難弱勢名單；都市空間成本高，偏遠地區更需分散儲備物資。",
+        "illustration": "audience-stages/elderly-prep.jpg",
+        "summary": "避難包過重常被中途棄置，醫療物品應集中易拿收納",
+        "details": [
+          "高齡者常因防災包過重，於混亂中棄置防災包或無法按時服藥。",
+          "將醫療物品與病歷放入易取用收納箱，一發生災害即可迅速帶走。",
+          "以名片簿彙整院民健保卡、病歷與家人聯絡方式，平時利於查閱、災時便於攜帶。",
+          "疏散演練需減少障礙，在避難動線地板高低落差處鋪設斜坡板，減少疏散撤離的障礙。"
+        ],
+        "example": "案例參考：螢光磁鐵疏散標示（嘉義天主教聖馬爾定醫院附設護理之家）",
+        "exampleImages": [],
+        "sources": [
+          {
+            "label": "案例庫｜螢光磁鐵疏散標示",
+            "url": "https://easy2do.ncdr.nat.gov.tw/county/case-study/49"
+          },
+          {
+            "label": "案例庫｜自走式避難梯與斜坡板",
+            "url": "https://easy2do.ncdr.nat.gov.tw/county/case-study/50"
+          }
+        ]
+      },
+      "response": {
+        "no": "02",
+        "name": "緊急應變期",
+        "time": "時間：0-3 天",
+        "focus": "飲食與物資多元儲備 ・ 舒適睡眠與彈性屏障",
+        "phaseDescription": "定義為災後72小時內。收容所須於6小時內開設，確認規模並迅速調度物資；前置作業僅約2小時，人力吃緊，最迫切是快速部署基礎維生物資。",
+        "illustration": "audience-stages/elderly-response.jpg",
+        "summary": "物資需納入流質食品、假牙清潔劑；床鋪需具輔助起身結構",
+        "details": [
+          "長者物資儲備應納入假牙清潔劑、助聽器、拐杖、流質食品、成人紙尿褲與慢性病藥物。",
+          "傳統大通鋪硬地板或過低床位，易造成上下床時膝關節負擔，甚至引發跌倒二次傷害。",
+          "符合人體工學、高度適當、具輔助起身結構的床鋪，是避難所不可缺少的設置。",
+          "高齡者體溫調節能力較差，冬季需能維持一定溫度的憩憩空間。"
+        ],
+        "example": "案例參考：具收納與軟墊的組合式紙床、名古屋工業大學可保溫避難小屋",
+        "exampleImages": [
+          "audience-stages/elderly-response-example-1.jpg"
+        ],
+        "sources": [
+          {
+            "label": "名古屋工業大學",
+            "url": "https://www.nitech.ac.jp/eng/news/2024/11052.html"
+          }
+        ]
+      },
+      "shelter": {
+        "no": "03",
+        "name": "緊急避難期",
+        "time": "時間：3-14 天",
+        "focus": "應急衛廁與環境維護 ・ 社群連結與心理撫慰",
+        "phaseDescription": "約為災後3天至兩週的過渡安置期，管理重心轉向生活規劃、醫療心理輔導與隱私把關；異質群體長時間混居，作息差異易生摩擦與衝突。",
+        "illustration": "audience-stages/elderly-shelter.jpg",
+        "summary": "需無障礙衛廁設計；失智長者易因環境劇變焦慮恐慌",
+        "details": [
+          "一般避難場地蹲式廁所起身不便，需配置無障礙衛廁。",
+          "日本已開發可支援災害現場的移動型福祉生態浴廁車，配備輪椅動力升降機（承重 300 公斤）。",
+          "失智症長輩因環境急劇變化易引發焦慮、恐慌，甚至導致認知障礙症狀惡化。",
+          "可透過擺設個人物品、具回憶性的照片，或在地廟宇祭祀文化作為社交與情緒穩定機制。"
+        ],
+        "example": "案例參考：具備個人特徵的避難小屋，導入清晰直覺的色彩指引系統",
+        "exampleImages": [
+          "audience-stages/elderly-shelter-example-1.jpg"
+        ],
+        "sources": [
+          {
+            "label": "名古屋工業大學",
+            "url": "https://www.nitech.ac.jp/eng/news/2024/11052.html"
+          }
+        ]
+      },
+      "recovery": {
+        "no": "04",
+        "name": "中長期收容與復原期",
+        "time": "時間：14 天－六個月以上",
+        "focus": "物資循環與中繼安置",
+        "phaseDescription": "多在兩週內結束，災民回歸家園或移轉組合屋；收容所解編後需清運善後，重心轉向中長期通用家具與生活機能重建，並檢討建檔。",
+        "illustration": "audience-stages/elderly-recovery.jpg",
+        "summary": "中繼屋初期缺乏基本家具，長者面臨生活自理卡關",
+        "details": [
+          "剛遷入中繼住處或返回家園初期，床組、衣櫃、桌椅等民生物資常無法即時進駐。",
+          "生活自理在最後關頭卡關，缺乏維持基本生活機能的工具。",
+          "應優先配置符合人體工學、適當高度的通用家具，銜接長期生活機能重建。"
+        ],
+        "example": null,
+        "exampleImages": [],
+        "sources": []
+      }
+    }
+  },
+  {
+    "id": "multicultural",
+    "label": "多元文化者",
+    "subLabel": "宗教與部落文化",
+    "accent": "#3B7CA6",
+    "stages": {
+      "prep": {
+        "no": "01",
+        "name": "備災期",
+        "time": "時間：災前",
+        "focus": "物資儲備空間收納 ・ 教育推行與減災演練",
+        "phaseDescription": "災前準備期：完成收容地點評估、設備全面檢查與防災演練，並更新造冊避難弱勢名單；都市空間成本高，偏遠地區更需分散儲備物資。",
+        "illustration": "audience-stages/multicultural-prep.jpg",
+        "summary": "備災缺乏文化考量；宣導標示需跳脫單一語言",
+        "details": [
+          "日常備災源頭缺乏對不同生理限制與習性的分流考量，公共儲備多為一體適用物資，缺乏包容性。",
+          "積極推動『通用設計』與跨文化標示標準化：物資外包裝與空間引導應捨棄單一語言。",
+          "導入國際通用色彩與直覺化圖示，確保不同語系族群能迅速識別。"
+        ],
+        "example": null,
+        "exampleImages": [],
+        "sources": []
+      },
+      "response": {
+        "no": "02",
+        "name": "緊急應變期",
+        "time": "時間：0-3 天",
+        "focus": "飲食與物資多元儲備 ・ 舒適睡眠與彈性屏障",
+        "phaseDescription": "定義為災後72小時內。收容所須於6小時內開設，確認規模並迅速調度物資；前置作業僅約2小時，人力吃緊，最迫切是快速部署基礎維生物資。",
+        "illustration": "audience-stages/multicultural-response.jpg",
+        "summary": "避難物資應標示清真、純素，防範食材混雜而不敢進食",
+        "details": [
+          "穆斯林的清真飲食、佛教或印度教的純素食等，在物資混雜或缺乏標示時，易導致災民不敢進食。",
+          "若僅有純素食選項，也可能造成體力或營養不足的風險。",
+          "物資分流與標示機制，需能讓不同信仰的災民第一時間拿到符合戒律的品項。"
+        ],
+        "example": null,
+        "exampleImages": [],
+        "sources": []
+      },
+      "shelter": {
+        "no": "03",
+        "name": "緊急避難期",
+        "time": "時間：3-14 天",
+        "focus": "應急衛廁與環境維護 ・ 社群連結與心理撫慰",
+        "phaseDescription": "約為災後3天至兩週的過渡安置期，管理重心轉向生活規劃、醫療心理輔導與隱私把關；異質群體長時間混居，作息差異易生摩擦與衝突。",
+        "illustration": "audience-stages/multicultural-shelter.jpg",
+        "summary": "大通鋪需性別屏障，穆斯林禮拜需隱私與淨身空間",
+        "details": [
+          "穆斯林每日需朝麥加方向禮拜 5 次，需先進行小淨、男女分開或隱蔽空間；部分教派有嚴格男女界線。",
+          "禮拜前小淨、如廁後淨下皆需用水清洗，衛廁需配備防水、易清潔設計，並標示『麥加方向』。",
+          "分隔家具需具備彈性調整模組，讓管理人員可依文化差異在『高隱私模式』與『開放互動模式』間切換。"
+        ],
+        "example": "案例參考：日本岡山オーエム機器輕隔間穆斯林禱告室，配防水地墊與方位標記",
+        "exampleImages": [
+          "audience-stages/multicultural-shelter-example-1.jpg"
+        ],
+        "sources": [
+          {
+            "label": "讀賣新聞",
+            "url": "https://www.yomiuri.co.jp/local/kansai/news/20260509-GYO1T00101/"
+          },
+          {
+            "label": "オーエム機器",
+            "url": "https://www.omrex.co.jp/products/products/content.html"
+          }
+        ]
+      },
+      "recovery": {
+        "no": "04",
+        "name": "中長期收容與復原期",
+        "time": "時間：14 天－六個月以上",
+        "focus": "物資循環與中繼安置",
+        "phaseDescription": "多在兩週內結束，災民回歸家園或移轉組合屋；收容所解編後需清運善後，重心轉向中長期通用家具與生活機能重建，並檢討建檔。",
+        "illustration": "audience-stages/multicultural-recovery.jpg",
+        "summary": "中繼據點宜結合在地信仰網絡，重建高信任共助關係",
+        "details": [
+          "中繼屋雖有基本家具家電，但常缺乏交誼廳與社交、活動空間，居民形容『很缺乏人性』。",
+          "規模龐大的災難牽涉的不只是個人與家庭，『部落』與『社區』的力量更需要被看見。",
+          "中繼據點宜結合在地教會與廟宇信仰，建立高信任的共助關懷網絡。"
+        ],
+        "example": null,
+        "exampleImages": [],
+        "sources": []
+      }
+    }
+  },
+  {
+    "id": "family",
+    "label": "親子家庭",
+    "subLabel": "孕產婦與幼兒",
+    "accent": "#B85C6B",
+    "stages": {
+      "prep": {
+        "no": "01",
+        "name": "備災期",
+        "time": "時間：災前",
+        "focus": "物資儲備空間收納 ・ 教育推行與減災演練",
+        "phaseDescription": "災前準備期：完成收容地點評估、設備全面檢查與防災演練，並更新造冊避難弱勢名單；都市空間成本高，偏遠地區更需分散儲備物資。",
+        "illustration": "audience-stages/family-prep.jpg",
+        "summary": "需依孩童年齡分類儲備食品、衣物與紙尿布",
+        "details": [
+          "依孩童年齡準備防災包：食品類（奶粉、奶瓶、嬰兒食品、米餅）、衣物類（紗布衣、手套、毯子）、衛生用品類（尿布、濕紙巾）。",
+          "家長需與孩子實地走訪避難路徑，並針對客廳、餐桌、臥室、浴室等各居室空間，演練臨震應變動作。",
+          "確認住家到避難地點的最短安全路徑。"
+        ],
+        "example": null,
+        "exampleImages": [],
+        "sources": []
+      },
+      "response": {
+        "no": "02",
+        "name": "緊急應變期",
+        "time": "時間：0-3 天",
+        "focus": "飲食與物資多元儲備 ・ 舒適睡眠與彈性屏障",
+        "phaseDescription": "定義為災後72小時內。收容所須於6小時內開設，確認規模並迅速調度物資；前置作業僅約2小時，人力吃緊，最迫切是快速部署基礎維生物資。",
+        "illustration": "audience-stages/family-response.jpg",
+        "summary": "孕產婦與嬰幼兒飲食敏感；缺乏專屬安全睡眠空間",
+        "details": [
+          "停水時連為嬰兒泡奶粉都有困難，孕產婦與嬰幼兒的飲食需求多樣且敏感。",
+          "孕婦需高頻率如廁、無法久坐硬地板，且對環境衛生與傳染病極度敏感。",
+          "一般收容所設備多為成人設計，嬰幼兒缺乏專屬安全睡眠空間，與成人同睡易生意外。"
+        ],
+        "example": "案例參考：藤屋段ボール株式会社 100% 紙製、可回收模組化家庭休息室",
+        "exampleImages": [
+          "audience-stages/family-response-example-1.jpg",
+          "audience-stages/family-response-example-2.jpg"
+        ],
+        "sources": [
+          {
+            "label": "藤屋段ボール株式会社",
+            "url": "https://www.fujiya-db.com/ondemand/cardboard-small-room/"
+          }
+        ]
+      },
+      "shelter": {
+        "no": "03",
+        "name": "緊急避難期",
+        "time": "時間：3-14 天",
+        "focus": "應急衛廁與環境維護 ・ 社群連結與心理撫慰",
+        "phaseDescription": "約為災後3天至兩週的過渡安置期，管理重心轉向生活規劃、醫療心理輔導與隱私把關；異質群體長時間混居，作息差異易生摩擦與衝突。",
+        "illustration": "audience-stages/family-shelter.jpg",
+        "summary": "衛廁需配備換尿布工具；兒童需要學習與療癒空間",
+        "details": [
+          "移動型福祉生態浴廁車不用水、以木屑熱處理，並備有尿布更換檯與嬰兒椅。",
+          "需打破將孩童視為單一群體的迷思：嬰幼兒需與家長保持身體接觸，學齡兒童則需課桌椅、塗鴉紙、繪本及遊具。",
+          "兼具學習與療癒功能的道具，協助孩子在混亂中維持日常作息、轉移災後創傷注意力。"
+        ],
+        "example": "案例參考：緊急避難所設置的哺乳室平時亦可作為偏遠地區臨時設置之用，或是在現行的公共空間增加輕隔間，馬上升級對婦幼族群的友善性。",
+        "exampleImages": [
+          "audience-stages/family-shelter-example-1.jpg",
+          "audience-stages/family-shelter-example-2.jpg"
+        ],
+        "sources": [
+          {
+            "label": "いなだにねっと",
+            "url": "https://ina-dani.net/topics/detail/?id=67376"
+          },
+          {
+            "label": "共同通信 PRWire",
+            "url": "https://kyodonewsprwire.jp/release/202311022186"
+          }
+        ]
+      },
+      "recovery": {
+        "no": "04",
+        "name": "中長期收容與復原期",
+        "time": "時間：14 天－六個月以上",
+        "focus": "物資循環與中繼安置",
+        "phaseDescription": "多在兩週內結束，災民回歸家園或移轉組合屋；收容所解編後需清運善後，重心轉向中長期通用家具與生活機能重建，並檢討建檔。",
+        "illustration": "audience-stages/family-recovery.jpg",
+        "summary": "中繼屋初期家具真空，育兒家庭難維持基本生活作息",
+        "details": [
+          "床組、衣櫃、桌椅等民生物資常無法即時進駐，育兒家庭難以維持日常作息。",
+          "需為嬰幼兒營造寧靜睡眠環境，同時讓孩子哭鬧或玩耍的聲音不干擾他人。",
+          "可大幅減輕家長在中長期避難時的集體生活壓力。"
+        ],
+        "example": null,
+        "exampleImages": [],
+        "sources": []
+      }
+    }
+  },
+  {
+    "id": "pets",
+    "label": "寵物家庭",
+    "subLabel": "犬・貓・特寵",
+    "accent": "#5C9C6B",
+    "stages": {
+      "prep": {
+        "no": "01",
+        "name": "備災期",
+        "time": "時間：災前",
+        "focus": "物資儲備空間收納 ・ 教育推行與減災演練",
+        "phaseDescription": "災前準備期：完成收容地點評估、設備全面檢查與防災演練，並更新造冊避難弱勢名單；都市空間成本高，偏遠地區更需分散儲備物資。",
+        "illustration": "audience-stages/pets-prep.jpg",
+        "summary": "防災包需精簡並整合居家家具；貓需日常適應籠養訓練",
+        "details": [
+          "寵物防災包需與居家家具整合，內容物需精簡以利現場迅速操作，並包含清晰的寵物獨照與人寵合照（護貝）、健康紀錄卡（病史與過敏用藥）。",
+          "多貓家庭飲食飲水準備難度高，移動性較低，攜帶重量易造成困難，可能更需要就地備災。",
+          "貓咪對環境變化與噪音極度敏感，日常應讓貓咪熟悉避難道具，訓練定點如廁、習慣項圈與牽繩，加強社會化。"
+        ],
+        "example": null,
+        "exampleImages": [],
+        "sources": []
+      },
+      "response": {
+        "no": "02",
+        "name": "緊急應變期",
+        "time": "時間：0-3 天",
+        "focus": "飲食與物資多元儲備 ・ 舒適睡眠與彈性屏障",
+        "phaseDescription": "定義為災後72小時內。收容所須於6小時內開設，確認規模並迅速調度物資；前置作業僅約2小時，人力吃緊，最迫切是快速部署基礎維生物資。",
+        "illustration": "audience-stages/pets-response.jpg",
+        "summary": "物資儲備需結合動物醫院；車宿避難建議準備寵物籠",
+        "details": [
+          "物資儲備除各類寵物乾糧，更要結合動物醫院儲備專業醫療藥品，因應毛小孩被帶出後的醫療需求。",
+          "選擇車宿避難的飼主，需準備寵物籠讓動物待在密閉空間，有助於保護安全與穩定精神。",
+          "將寵物籠與駕駛座隔開，亦可提升行車安全，避免誤觸或干擾。"
+        ],
+        "example": "案例參考：可摺疊式中小型犬寵物箱，頂部格柵通風、底部斜面防翻倒",
+        "exampleImages": [
+          "audience-stages/pets-response-example-1.jpg",
+          "audience-stages/pets-response-example-2.jpg"
+        ],
+        "sources": [
+          {
+            "label": "wakosiki 新商品資訊",
+            "url": "https://www.wakosiki.co.jp/news/"
+          },
+          {
+            "label": "petlives｜車宿避難",
+            "url": "https://petlives.jp/love-dog/9703"
+          }
+        ]
+      },
+      "shelter": {
+        "no": "03",
+        "name": "緊急避難期",
+        "time": "時間：3-14 天",
+        "focus": "應急衛廁與環境維護 ・ 社群連結與心理撫慰",
+        "phaseDescription": "約為災後3天至兩週的過渡安置期，管理重心轉向生活規劃、醫療心理輔導與隱私把關；異質群體長時間混居，作息差異易生摩擦與衝突。",
+        "illustration": "audience-stages/pets-shelter.jpg",
+        "summary": "犬隻排泄需隔絕異味；貓咪籠具需完全遮蔽視線",
+        "details": [
+          "犬隻排泄物易散發氣味，需準備防漏尿的矽膠捲筒式尿布托盤、尿布墊與便便袋。",
+          "貓咪認氣味、易憋尿，如廁需備少量舊貓砂，或以紙箱搭配撕碎報紙作為臨時貓砂盆替代品。",
+          "貓用籠具材質需具高防水性、易擦拭清潔，並能有效遮蔽外界視線、阻絕氣味漏出，全程以布料覆蓋降低刺激。",
+          "並非所有收容所都能接受寵物，部分人對寵物毛髮、氣味過敏，多將寵物安置於獨立專區。"
+        ],
+        "example": "案例參考：貓咪緊急安置籠——弱光設計、內配專用便盆，1 分鐘可原地搭建",
+        "exampleImages": [
+          "audience-stages/pets-shelter-example-1.jpg"
+        ],
+        "sources": [
+          {
+            "label": "cat.benesse.ne.jp",
+            "url": "https://cat.benesse.ne.jp/lovecat/content/?id=65345"
+          }
+        ]
+      },
+      "recovery": {
+        "no": "04",
+        "name": "中長期收容與復原期",
+        "time": "時間：14 天－六個月以上",
+        "focus": "物資循環與中繼安置",
+        "phaseDescription": "多在兩週內結束，災民回歸家園或移轉組合屋；收容所解編後需清運善後，重心轉向中長期通用家具與生活機能重建，並檢討建檔。",
+        "illustration": "audience-stages/pets-recovery.jpg",
+        "summary": "中長期收容需考量過敏問題，規劃寵物異地安置配套",
+        "details": [
+          "短期可與寵物同住，但中長期需考量他人過敏情況，思考是否能異地安置。",
+          "收容場所空間與平時不同，寵物易因壓力而降低免疫力，需要適度活動的安全環境。",
+          "「同行避難」不代表「人寵共居」，一般會將寵物安置於其他臨時動物收容所，避免干擾他人休憩。"
+        ],
+        "example": null,
+        "exampleImages": [],
+        "sources": []
+      }
+    }
+  }
+]
