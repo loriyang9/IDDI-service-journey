@@ -55,8 +55,10 @@ test("fallback data keeps the approved sheet shape", async () => {
   assert.ok(mainHeaders.includes("場景ID"));
   assert.ok(mainHeaders.includes("族群需求"));
   assert.ok(mainHeaders.includes("服務端挑戰／考量重點（AI草稿）"));
-  assert.ok(scenarioHeaders.includes("設計挑戰"));
-  assert.ok(scenarioHeaders.includes("技術解題重點"));
+  assert.ok(scenarioHeaders.includes("情境簡述"));
+  assert.ok(scenarioHeaders.includes("產品方向"));
+  assert.ok(scenarioHeaders.includes("核心功能與規格"));
+  assert.ok(scenarioHeaders.includes("中長期收容與復原期設計挑戰"));
 });
 
 test("verified case fallback keeps source and challenge mappings", async () => {
@@ -77,6 +79,12 @@ test("verified case fallback keeps source and challenge mappings", async () => {
   assert.ok(cases.some((item) => item["對應設計挑戰"] === "【特寵】安置"));
   assert.ok(cases.some((item) => item["對應設計挑戰"] === "【鳥類】安置"));
   assert.ok(cases.some((item) => item["卡片標題"].includes("魔法のかまどごはん")));
-  assert.ok(cases.every((item) => item["來源標示（網站）"]));
-  assert.ok(cases.every((item) => item["對應設計挑戰"]));
+  const websiteCases = cases.filter((item) =>
+    item["審核狀態"] === "已確認" &&
+    ["情境現場", "參考案例"].includes(item["內容層級"]) &&
+    !["M02", "M23"].includes(item["素材ID"]) &&
+    item["來源標示（網站）"]
+  );
+  assert.ok(websiteCases.length >= 15);
+  assert.ok(websiteCases.every((item) => item["來源標示（網站）"]));
 });

@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" role="img" aria-labelledby="title desc">
+  <title id="title">居家家具與避難兩用防災箱</title>
+  <desc id="desc">以簡潔線條呈現紙構椅凳與邊几，整箱攜行後轉換成犬貓臨時安置空間。</desc>
+  <rect width="640" height="360" fill="#f7f6f2"/>
+  <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M45 286h550" stroke="#1d1d1b" stroke-width="10"/>
+
+    <!-- 日常使用：紙構椅凳與邊几 -->
+    <path d="M58 146h142v24H58zM72 170v88M186 170v88" stroke="#1d1d1b" stroke-width="9"/>
+    <path d="M72 184h114v74H72z" stroke="#35679d" stroke-width="7" stroke-dasharray="22 14"/>
+    <path d="M92 184v74M166 184v74" stroke="#dd3326" stroke-width="7"/>
+    <path d="M91 132h76" stroke="#dd3326" stroke-width="7"/>
+    <path d="M88 120c16-14 64-14 82 0" stroke="#35679d" stroke-width="7" stroke-dasharray="16 12"/>
+
+    <!-- 攜行轉換 -->
+    <path d="M220 204h60" stroke="#dd3326" stroke-width="7"/>
+    <path d="M266 190l16 14-16 14" stroke="#dd3326" stroke-width="7"/>
+    <path d="M294 166h84v92h-84z" stroke="#1d1d1b" stroke-width="9"/>
+    <path d="M312 166c0-26 12-40 24-40s24 14 24 40" stroke="#35679d" stroke-width="7" stroke-dasharray="16 11"/>
+    <path d="M315 188v70M357 188v70" stroke="#dd3326" stroke-width="7"/>
+
+    <!-- 避難使用：犬貓臨時安置籠 -->
+    <path d="M407 134h176v124H407z" stroke="#1d1d1b" stroke-width="9"/>
+    <path d="M407 158h176M443 158v100M547 158v100" stroke="#dd3326" stroke-width="7"/>
+    <path d="M407 180h176M407 214h176" stroke="#35679d" stroke-width="7" stroke-dasharray="20 13"/>
+
+    <!-- 狗 -->
+    <path d="M458 214c-12-12-13-34-2-48l-9-14 20 8c12-6 28-2 34 10 7 14 1 34-11 44" stroke="#1d1d1b" stroke-width="6"/>
+    <path d="M469 181h1M487 181h1M473 194c5 5 10 5 15 0" stroke="#35679d" stroke-width="6"/>
+
+    <!-- 貓 -->
+    <path d="M518 216c-10-13-9-32 0-43l-2-17 15 10 15-10-2 17c9 11 10 30 1 43" stroke="#1d1d1b" stroke-width="6"/>
+    <path d="M525 183h1M538 183h1M526 194h10M521 191l-12-3M543 191l12-3" stroke="#35679d" stroke-width="5"/>
+  </g>
+</svg>

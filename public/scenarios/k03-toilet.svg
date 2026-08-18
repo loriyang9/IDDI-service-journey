@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" role="img" aria-labelledby="title desc">
+  <title id="title">高齡者與不便者也能穩定使用的便座</title>
+  <desc id="desc">以簡潔線條呈現穩定便座、雙側施力扶手、免水污物袋與平整收納結構。</desc>
+  <rect width="640" height="360" fill="#f7f6f2"/>
+  <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M94 282h452" stroke="#1d1d1b" stroke-width="12"/>
+    <path d="M222 146h196v48H222zM246 194h148v88H246z" stroke="#1d1d1b" stroke-width="10"/>
+    <ellipse cx="320" cy="170" rx="54" ry="18" stroke="#35679d" stroke-width="9" stroke-dasharray="26 15"/>
+    <path d="M174 260V114h72M466 260V114h-72" stroke="#1d1d1b" stroke-width="10"/>
+    <path d="M174 158h72M394 158h72" stroke="#dd3326" stroke-width="9"/>
+    <path d="M276 204l18 62h52l18-62" stroke="#35679d" stroke-width="9" stroke-dasharray="24 14"/>
+    <path d="M246 282v28M394 282v28" stroke="#dd3326" stroke-width="9"/>
+  </g>
+</svg>

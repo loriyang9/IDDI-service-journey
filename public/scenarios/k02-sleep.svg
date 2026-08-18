@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" role="img" aria-labelledby="title desc">
+  <title id="title">高齡者安睡設計</title>
+  <desc id="desc">以簡潔線條呈現有高度的床體、起身扶手、床側收納與局部遮光。</desc>
+  <rect width="640" height="360" fill="#f7f6f2"/>
+  <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M76 276h486" stroke="#1d1d1b" stroke-width="12"/>
+    <path d="M120 212h350v64H120z" stroke="#1d1d1b" stroke-width="10"/>
+    <path d="M120 188h350v40H120z" stroke="#35679d" stroke-width="10" stroke-dasharray="28 17"/>
+    <path d="M156 276v34M430 276v34" stroke="#dd3326" stroke-width="9"/>
+    <path d="M404 212V104h76v108" stroke="#1d1d1b" stroke-width="10"/>
+    <path d="M422 122h40M422 150h40" stroke="#dd3326" stroke-width="8"/>
+    <path d="M174 212v-58c0-28 20-46 48-46h28" stroke="#1d1d1b" stroke-width="10"/>
+    <path d="M238 104v108" stroke="#dd3326" stroke-width="8"/>
+    <path d="M496 104h50v150" stroke="#35679d" stroke-width="10" stroke-dasharray="28 17"/>
+  </g>
+</svg>

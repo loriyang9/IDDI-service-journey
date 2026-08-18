@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" role="img" aria-labelledby="title desc">
+  <title id="title">可快速辨識並轉換成收納功能的物流箱</title>
+  <desc id="desc">以簡潔線條呈現具圖示標記的物流箱，開箱後轉換為分層陳列架。</desc>
+  <rect width="640" height="360" fill="#f7f6f2"/>
+  <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M70 282h500" stroke="#1d1d1b" stroke-width="12"/>
+    <path d="M106 150l114-50 112 50-112 52zM106 150v116l114 46 112-46V150" stroke="#1d1d1b" stroke-width="10"/>
+    <path d="M220 202v110" stroke="#dd3326" stroke-width="8"/>
+    <path d="M145 173l36 16M155 214l24 10M258 185l38-17M258 224l30-14" stroke="#35679d" stroke-width="9" stroke-dasharray="22 13"/>
+    <path d="M374 112h152v170H374zM374 168h152M374 226h152" stroke="#1d1d1b" stroke-width="10"/>
+    <path d="M402 138h30M448 138h48M402 196h40M458 196h38M402 254h30M448 254h48" stroke="#35679d" stroke-width="8" stroke-dasharray="20 12"/>
+    <path d="M348 118l26-6M348 168h26M348 218l26 8" stroke="#dd3326" stroke-width="8"/>
+  </g>
+</svg>

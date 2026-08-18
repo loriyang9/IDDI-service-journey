@@ -2,26 +2,21 @@
 
 import { useEffect, useMemo, useState } from "react";
 import fallbackData from "./data/sheet-fallback.json";
-import mediaFallback from "./data/media-fallback.json";
 import sceneDetail from "./data/scene-detail.json";
 import audienceStageDetails from "./data/audience-stage-details.json";
+import ScenarioExperience from "./scenario-experience";
+import SitePageHeader from "./site-page-header";
+import HorizontalScroll from "./horizontal-scroll";
 
 type Cell = string | number | boolean | null | undefined;
 type SheetBlock = { range?: string; values: Cell[][] };
 type SheetBundle = {
   main: SheetBlock;
-  scenarios: SheetBlock;
+  scenarios?: SheetBlock;
   media?: SheetBlock;
 };
 
 type MainRecord = Record<string, string>;
-type ScenarioRecord = Record<string, string>;
-type MediaRecord = Record<string, string>;
-type CaseMedia = {
-  src: string;
-  alt: string;
-  kind?: "image" | "drive-video" | "youtube-video";
-};
 
 type StageKey = "prep" | "response" | "shelter" | "recovery";
 type AudienceStageSource = {
@@ -45,69 +40,6 @@ type AudienceSource = {
   stages: Record<StageKey, AudienceStageSource>;
 };
 type OpenAudienceStage = { audienceId: string; stageKey: StageKey };
-
-const REPORT_URL = "https://disaster-study2026.vercel.app/";
-const TECH_URL = "https://fudy-paper-structure.vercel.app/";
-const PET_STATUS = "寵物防災避難現況";
-const MATERIAL_STATUS = "物資派發現況";
-
-const CASE_MEDIA: Record<string, CaseMedia[]> = {
-  M01: [
-    {
-      src: "https://drive.google.com/file/d/1X7EN7llh71Zmif8lMyJ_yRKBo-KbD602/preview",
-      alt: "台灣防災演練寵物收容區現況第一段影片",
-      kind: "drive-video",
-    },
-    {
-      src: "https://drive.google.com/file/d/1-cQKmL4GdTyooioB-sdDi5PYqho3V6YW/preview",
-      alt: "台灣防災演練寵物收容區現況第二段影片",
-      kind: "drive-video",
-    },
-  ],
-  M03: [
-    {
-      src: "cases/m03-japan-rescue-pet-support.webp",
-      alt: "日本レスキュー協会災害救助犬與受災寵物支援標誌",
-    },
-  ],
-  M04: [
-    {
-      src: "cases/m04-suizenji-pet-shelter.webp",
-      alt: "動物支援ナース發布的熊本市水前寺競技場寵物同伴避難所社群貼文",
-    },
-    {
-      src: "cases/m04b-kumamoto-pet-shelter-news.webp",
-      alt: "熊本地震後人與寵物共同避難的新聞畫面",
-    },
-    {
-      src: "cases/m04c-kyushu-animal-school.webp",
-      alt: "九州動物學院寵物同行避難所內的飼主與寵物",
-    },
-    {
-      src: "cases/m04d-disaster-veterinary-support.webp",
-      alt: "災後動物醫療支援現場",
-    },
-  ],
-  M18: [
-    {
-      src: "https://www.youtube-nocookie.com/embed/nXvwt1GKw5Q?start=59&rel=0",
-      alt: "停水後仰賴簡易廁所的避難現場報導",
-      kind: "youtube-video",
-    },
-  ],
-  M22: [
-    {
-      src: "https://drive.google.com/file/d/18ge4336t42nMNN_vuIW-WwE6R8LGeGXo/preview",
-      alt: "物資領取、分類與入住分派現場第一段影片",
-      kind: "drive-video",
-    },
-    {
-      src: "https://drive.google.com/file/d/1G6S6PjmMIyAW-HYasyLMGSWrTtPojWY4/preview",
-      alt: "物資分派動線、人員協作與物資陳列現場第二段影片",
-      kind: "drive-video",
-    },
-  ],
-};
 
 const GROUPS = [
   { id: "G01", label: "高齡者", members: ["G01"] },
@@ -155,19 +87,6 @@ const STAGE_CLUSTERS: { key: StageKey; start: number; span: number }[] = [
   { key: "recovery", start: 8, span: 1 },
 ];
 
-const SCENARIO_COLORS: Record<string, string> = {
-  K01: "#6B5B3E",
-  K02: "#3D6B8F",
-  K03: "#4D5560",
-  K04: "#A8631A",
-};
-
-const SCENARIO_WASHES: Record<string, string> = {
-  K01: "#EEE7DB",
-  K02: "#E8EFF4",
-  K03: "#ECEDEF",
-  K04: "#F3E8DB",
-};
 
 const PHASES = [
   { label: "備災期", start: 2, span: 2 },
@@ -200,35 +119,6 @@ function splitLines(value: string) {
     .filter(Boolean);
 }
 
-function challengeParts(value: string) {
-  const cleaned = value.replace(/^\d+[.、]\s*/, "").trim();
-  const separator = cleaned.indexOf("：");
-  return {
-    title: separator >= 0 ? cleaned.slice(0, separator).trim() : cleaned,
-    description: separator >= 0 ? cleaned.slice(separator + 1).trim() : "",
-  };
-}
-
-function normalizeChallenge(value: string) {
-  return challengeParts(value).title;
-}
-
-function matchesChallenge(mapping: string, challenge: string) {
-  const target = normalizeChallenge(challenge);
-  return mapping
-    .split(/[／/]/)
-    .map((item) => item.trim())
-    .filter(Boolean)
-    .some((item) => item === target || item.includes(target) || target.includes(item));
-}
-
-function normalizeMediaUrl(value: string) {
-  const driveFileId = value.match(/drive\.google\.com\/file\/d\/([^/]+)/)?.[1];
-  if (driveFileId) {
-    return `https://drive.google.com/thumbnail?id=${driveFileId}&sz=w1600`;
-  }
-  return value.startsWith("/") ? value.slice(1) : value;
-}
 
 const FALLBACK_SCENE_SUMMARIES: Record<string, string[]> = {
   C01: ["有限空間與儲備體積的衝突", "降低備災物資的拿取阻力", "建立物資維護與更換機制"],
@@ -250,25 +140,10 @@ function compactNeed(sceneId: string, summary: string, fullText: string) {
   });
 }
 
-function scenarioMembers(records: MainRecord[], scenarioId: string) {
-  const members = new Set(
-    records
-      .filter((record) => record["關鍵情境ID"] === scenarioId)
-      .map((record) => record["族群ID"])
-  );
-  if (scenarioId === "K04" && members.has("G04")) {
-    members.add("G05");
-    members.add("G06");
-  }
-  return members;
-}
-
 function MainContent() {
   const [bundle, setBundle] = useState<SheetBundle>(fallbackData as SheetBundle);
   const [dataSource, setDataSource] = useState<"fallback" | "live">("fallback");
   const [selectedGroups, setSelectedGroups] = useState<Set<string>>(new Set());
-  const [activeScenario, setActiveScenario] = useState<string | null>(null);
-  const [activeChallenge, setActiveChallenge] = useState<string | null>(null);
   const [openScene, setOpenScene] = useState<string | null>(null);
   const [openAudienceStage, setOpenAudienceStage] = useState<OpenAudienceStage | null>(null);
   const [hoveredAudienceStage, setHoveredAudienceStage] = useState<string | null>(null);
@@ -287,7 +162,7 @@ function MainContent() {
         return response.json();
       })
       .then((data: SheetBundle) => {
-        if (data?.main?.values?.length && data?.scenarios?.values?.length) {
+        if (data?.main?.values?.length) {
           setBundle(data);
           setDataSource("live");
         }
@@ -303,25 +178,6 @@ function MainContent() {
     () => rowsToObjects(bundle.main.values) as MainRecord[],
     [bundle]
   );
-  const scenarios = useMemo(
-    () => rowsToObjects(bundle.scenarios.values) as ScenarioRecord[],
-    [bundle]
-  );
-  const mediaRecords = useMemo(
-    () => {
-      const source = bundle.media?.values?.length
-        ? (rowsToObjects(bundle.media.values) as MediaRecord[])
-        : (mediaFallback as MediaRecord[]);
-      return source.filter(
-        (record) => !record["審核狀態"] || record["審核狀態"] === "已確認"
-      );
-    },
-    [bundle]
-  );
-
-  useEffect(() => {
-    setActiveChallenge(null);
-  }, [activeScenario]);
 
   const scenes = useMemo(() => {
     const seen = new Map<string, MainRecord>();
@@ -343,11 +199,10 @@ function MainContent() {
   useEffect(() => {
     function onKeyDown(event: KeyboardEvent) {
       if (event.key === "Escape") {
-        if (activeChallenge) setActiveChallenge(null);
-        else if (openAudienceStage) setOpenAudienceStage(null);
+        if (openAudienceStage) setOpenAudienceStage(null);
         else if (openScene) setOpenScene(null);
       }
-      if (!activeChallenge && !openAudienceStage && openScene && (event.key === "ArrowLeft" || event.key === "ArrowRight")) {
+      if (!openAudienceStage && openScene && (event.key === "ArrowLeft" || event.key === "ArrowRight")) {
         const index = sceneIds.indexOf(openScene);
         const offset = event.key === "ArrowLeft" ? -1 : 1;
         setOpenScene(sceneIds[(index + offset + sceneIds.length) % sceneIds.length]);
@@ -355,40 +210,24 @@ function MainContent() {
     }
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [activeChallenge, openAudienceStage, openScene, sceneIds]);
+  }, [openAudienceStage, openScene, sceneIds]);
 
   useEffect(() => {
-    if (!openScene && !openAudienceStage && !activeChallenge) return;
+    if (!openScene && !openAudienceStage) return;
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     return () => {
       document.body.style.overflow = previousOverflow;
     };
-  }, [activeChallenge, openAudienceStage, openScene]);
-
-  const contextMembers = activeScenario
-    ? scenarioMembers(records, activeScenario)
-    : new Set<string>();
+  }, [openAudienceStage, openScene]);
 
   const visibleGroupIds = GROUPS.filter(
-    (group) =>
-      selectedGroups.has(group.id) ||
-      group.members.some((member) => contextMembers.has(member))
+    (group) => selectedGroups.has(group.id)
   ).flatMap((group) => group.members);
 
-  const displayedGroupIds =
-    activeScenario === "K04" && visibleGroupIds.some((id) => PET_GROUP_IDS.includes(id))
-      ? [...visibleGroupIds.filter((id) => !PET_GROUP_IDS.includes(id)), "PET_COMMON"]
-      : visibleGroupIds;
+  const displayedGroupIds = visibleGroupIds;
   const showPetSpeciesRows = PET_GROUP_IDS.every((id) => displayedGroupIds.includes(id));
   const standardGroupIds = displayedGroupIds.filter((id) => !PET_GROUP_IDS.includes(id));
-
-  const scenarioStyle = activeScenario
-    ? ({
-        "--scenario-color": SCENARIO_COLORS[activeScenario],
-        "--scenario-wash": SCENARIO_WASHES[activeScenario],
-      } as React.CSSProperties)
-    : undefined;
 
   function toggleGroup(groupId: string) {
     setSelectedGroups((current) => {
@@ -399,39 +238,17 @@ function MainContent() {
     });
   }
 
-  function isSceneMuted(sceneId: string) {
-    if (!activeScenario) return false;
-    return !records.some(
-      (record) =>
-        record["場景ID"] === sceneId && record["關鍵情境ID"] === activeScenario
-    );
-  }
-
   function recordFor(sceneId: string, groupId: string) {
     if (groupId === "PET_COMMON") {
       return records.find(
         (record) =>
           record["場景ID"] === sceneId &&
-          PET_GROUP_IDS.includes(record["族群ID"]) &&
-          (!activeScenario || record["關鍵情境ID"] === activeScenario)
+          PET_GROUP_IDS.includes(record["族群ID"])
       );
     }
     return records.find(
       (record) => record["場景ID"] === sceneId && record["族群ID"] === groupId
     );
-  }
-
-  function isRecordMuted(record?: MainRecord) {
-    if (!activeScenario) return false;
-    return !record || record["關鍵情境ID"] !== activeScenario;
-  }
-
-  function isSceneRelated(sceneId: string) {
-    return Boolean(activeScenario) && !isSceneMuted(sceneId);
-  }
-
-  function isRecordRelated(record?: MainRecord) {
-    return Boolean(activeScenario && record?.["關鍵情境ID"] === activeScenario);
   }
 
   function summaryFor(sceneId: string) {
@@ -508,9 +325,6 @@ function MainContent() {
               <DataCard
                 key={`${field}-${sceneId}-pet-common`}
                 content={record?.[field]}
-                muted={isRecordMuted(record)}
-                related={isRecordRelated(record)}
-                scenarioColor={activeScenario ? SCENARIO_COLORS[activeScenario] : undefined}
                 provider={provider}
                 className="pet-shared-card"
                 layoutStyle={{ gridColumn, gridRow: "1 / span 3" }}
@@ -532,9 +346,6 @@ function MainContent() {
               <DataCard
                 key={`${field}-${sceneId}-${groupId}`}
                 content={record?.[field]}
-                muted={isRecordMuted(record)}
-                related={isRecordRelated(record)}
-                scenarioColor={activeScenario ? SCENARIO_COLORS[activeScenario] : undefined}
                 provider={provider}
                 layoutStyle={{ gridColumn, gridRow: rowIndex + 1 }}
                 interactive={interactive}
@@ -553,57 +364,6 @@ function MainContent() {
     );
   }
 
-  const activeScenarioData = scenarios.find(
-    (scenario) => scenario["情境ID"] === activeScenario
-  );
-  const challengeItems = activeScenarioData
-    ? splitLines(activeScenarioData["設計挑戰"]).map(challengeParts)
-    : [];
-  const activeChallengeSheetDetail = mediaRecords.find(
-    (record) =>
-      record["關鍵情境ID（內部）"] === activeScenario &&
-      record["內容層級"] === "設計挑戰詳情" &&
-      matchesChallenge(record["對應設計挑戰"] ?? "", activeChallenge ?? "")
-  );
-  const petStatusSelected = activeScenario === "K01" && activeChallenge === PET_STATUS;
-  const materialStatusSelected = activeScenario === "K04" && activeChallenge === MATERIAL_STATUS;
-  const contextStatus = activeScenario === "K01"
-    ? PET_STATUS
-    : activeScenario === "K04"
-      ? MATERIAL_STATUS
-      : null;
-  const contextStatusSelected = petStatusSelected || materialStatusSelected;
-  const activeChallengeDescription = petStatusSelected
-    ? "以台灣防災演練中的寵物收容區現況為背景，觀察分區、動線、物資、籠具、照護及人寵共處等現場條件。"
-    : materialStatusSelected
-      ? "以防災演練中的物資領取、分類與入住分派流程為背景，觀察分派動線、人員協作、物資陳列，以及大量資訊與物資下的操作負荷。"
-    : challengeItems.find((item) => item.title === activeChallenge)?.description ||
-      activeChallengeSheetDetail?.["一句說明（網站草稿）"] ||
-      "";
-  const activeCases = activeChallenge
-    ? mediaRecords.filter(
-        (record) => {
-          if (record["關鍵情境ID（內部）"] !== activeScenario) return false;
-          if (petStatusSelected) {
-            return (
-              record["內容層級"] === "情境現場" &&
-              matchesChallenge(record["對應設計挑戰"] ?? "", PET_STATUS)
-            );
-          }
-          if (materialStatusSelected) {
-            return (
-              record["素材ID"] === "M22" &&
-              record["內容層級"] === "情境現場" &&
-              matchesChallenge(record["對應設計挑戰"] ?? "", MATERIAL_STATUS)
-            );
-          }
-          return (
-            ["情境現場", "參考案例"].includes(record["內容層級"]) &&
-            matchesChallenge(record["對應設計挑戰"] ?? "", activeChallenge)
-          );
-        }
-      )
-    : [];
   const activeScene = scenes.find((scene) => scene["場景ID"] === openScene);
   const openIndex = openScene ? sceneIds.indexOf(openScene) : -1;
   const activeAudienceSource = openAudienceStage
@@ -615,18 +375,11 @@ function MainContent() {
 
   return (
     <main data-source={dataSource}>
-      <header className="pagehead wrap">
-        <p className="eyebrow">打包一個家：未來生活的防災避難創新設計</p>
-        <h1>防災避難服務流程分析</h1>
-        <p className="lede">
-          從備災、緊急應變、避難到中長期復原等階段中的七個核心場景，查看不同族群及服務提供者需求，以及關鍵應用情境的設計挑戰與技術解題重點。
-        </p>
-        <nav className="source-links" aria-label="相關資料">
-          <span className="source-label">延伸閱讀</span>
-          <a href={REPORT_URL} target="_blank" rel="noreferrer">未來防災避難關鍵情境研究報告 ↗</a>
-          <a href={TECH_URL} target="_blank" rel="noreferrer">永續材料／結構研究報告 ↗</a>
-        </nav>
-      </header>
+      <SitePageHeader
+        page="flow"
+        title="防災避難服務流程分析"
+        description="從備災、緊急應變、避難到中長期復原等階段中的七個核心場景，查看不同族群及服務提供者需求。"
+      />
 
       <section className="toolbar" aria-label="流程篩選">
         <div className="wrap toolbar-grid">
@@ -634,48 +387,15 @@ function MainContent() {
           <div className="button-row">
             {GROUPS.map((group) => {
               const selected = selectedGroups.has(group.id);
-              const contextual = group.members.some((member) => contextMembers.has(member));
               return (
                 <button
                   key={group.id}
                   type="button"
-                  className={`filter-button ${selected ? "is-selected" : ""} ${
-                    contextual && !selected ? "is-contextual" : ""
-                  }`}
+                  className={`filter-button ${selected ? "is-selected" : ""}`}
                   aria-pressed={selected}
                   onClick={() => toggleGroup(group.id)}
-                  style={
-                    activeScenario
-                      ? ({ "--context-color": SCENARIO_COLORS[activeScenario] } as React.CSSProperties)
-                      : undefined
-                  }
                 >
                   {group.label}
-                </button>
-              );
-            })}
-          </div>
-
-          <span className="toolbar-label">關鍵情境</span>
-          <div className="button-row scenario-row">
-            {scenarios.map((scenario) => {
-              const id = scenario["情境ID"];
-              const active = id === activeScenario;
-              return (
-                <button
-                  key={id}
-                  type="button"
-                  className={`scenario-button ${active ? "is-active" : ""}`}
-                  aria-pressed={active}
-                  onClick={() => setActiveScenario(active ? null : id)}
-                  style={({ "--scenario-color": SCENARIO_COLORS[id] } as React.CSSProperties)}
-                >
-                  <span
-                    className="scenario-marker"
-                    style={{ backgroundColor: SCENARIO_COLORS[id] }}
-                    aria-hidden="true"
-                  />
-                  {scenario["情境名稱"]}
                 </button>
               );
             })}
@@ -689,21 +409,13 @@ function MainContent() {
           <div className="mobile-button-scroll">
             {GROUPS.map((group) => {
               const selected = selectedGroups.has(group.id);
-              const contextual = group.members.some((member) => contextMembers.has(member));
               return (
                 <button
                   key={group.id}
                   type="button"
-                  className={`filter-button ${selected ? "is-selected" : ""} ${
-                    contextual && !selected ? "is-contextual" : ""
-                  }`}
+                  className={`filter-button ${selected ? "is-selected" : ""}`}
                   aria-pressed={selected}
                   onClick={() => toggleGroup(group.id)}
-                  style={
-                    activeScenario
-                      ? ({ "--context-color": SCENARIO_COLORS[activeScenario] } as React.CSSProperties)
-                      : undefined
-                  }
                 >
                   {group.label}
                 </button>
@@ -712,94 +424,10 @@ function MainContent() {
           </div>
         </div>
 
-        <div className="mobile-filter-row">
-          <span className="mobile-filter-label">情境</span>
-          <div className="mobile-button-scroll">
-            {scenarios.map((scenario) => (
-              <button
-                key={scenario["情境ID"]}
-                type="button"
-                className={`scenario-button ${scenario["情境ID"] === activeScenario ? "is-active" : ""}`}
-                aria-pressed={scenario["情境ID"] === activeScenario}
-                onClick={() => setActiveScenario(
-                  scenario["情境ID"] === activeScenario ? null : scenario["情境ID"]
-                )}
-                style={({ "--scenario-color": SCENARIO_COLORS[scenario["情境ID"]] } as React.CSSProperties)}
-              >
-                <span
-                  className="scenario-marker"
-                  style={{ backgroundColor: SCENARIO_COLORS[scenario["情境ID"]] }}
-                  aria-hidden="true"
-                />
-                {scenario["情境名稱"]}
-              </button>
-            ))}
-          </div>
-        </div>
       </section>
 
-      {activeScenarioData && activeScenario && (
-        <section className="scenario-strip" aria-live="polite" style={scenarioStyle}>
-          <div className="wrap scenario-strip-inner">
-            <div className="scenario-heading">
-              <h2>{activeScenarioData["情境名稱"]}</h2>
-            </div>
-            <div className="scenario-columns">
-              <section>
-                {contextStatus && (
-                  <div className="scenario-context-control">
-                    <h3>背景與現況</h3>
-                    <ol>
-                      <li>
-                        <button
-                          type="button"
-                          className={`challenge-button ${contextStatusSelected ? "is-selected" : ""}`}
-                          aria-expanded={contextStatusSelected}
-                          onClick={() => setActiveChallenge(contextStatusSelected ? null : contextStatus)}
-                        >
-                          <span>{contextStatus}</span>
-                          <span aria-hidden="true">{contextStatusSelected ? "−" : "＋"}</span>
-                        </button>
-                      </li>
-                    </ol>
-                  </div>
-                )}
-                <h3>設計挑戰</h3>
-                <ol>
-                  {challengeItems.map((item) => {
-                    const challenge = item.title;
-                    const selected = activeChallenge === challenge;
-                    return (
-                    <li key={item.title}>
-                      <button
-                        type="button"
-                        className={`challenge-button ${selected ? "is-selected" : ""}`}
-                        aria-expanded={selected}
-                        onClick={() => setActiveChallenge(selected ? null : challenge)}
-                      >
-                        <span>{challenge}</span>
-                        <span aria-hidden="true">{selected ? "−" : "＋"}</span>
-                      </button>
-                    </li>
-                    );
-                  })}
-                </ol>
-              </section>
-              <section>
-                <h3>技術解題重點</h3>
-                <ul>
-                  {splitLines(activeScenarioData["技術解題重點"]).map((item) => (
-                    <li key={item}>{item}</li>
-                  ))}
-                </ul>
-              </section>
-            </div>
-          </div>
-        </section>
-      )}
-
       <section className="journey-section">
-        <div className="journey-scroll" tabIndex={0} aria-label="防災避難服務流程，可左右捲動">
+        <HorizontalScroll className="journey-scroll" ariaLabel="防災避難服務流程，可左右捲動">
           <div className="journey-board">
             <div className="flow-row phase-row">
               <div className="row-label">階段</div>
@@ -832,9 +460,8 @@ function MainContent() {
                 const [domain, name] = scene["核心場景"].split("｜");
                 return (
                   <article
-                    className={`scene-heading-card ${isSceneRelated(scene["場景ID"]) ? "is-related" : ""} ${isSceneMuted(scene["場景ID"]) ? "is-muted" : ""}`}
+                    className="scene-heading-card"
                     key={scene["場景ID"]}
-                    style={scenarioStyle}
                   >
                     <span>{domain}</span>
                     <strong>{name}</strong>
@@ -847,11 +474,10 @@ function MainContent() {
               {scenes.map((scene) => (
                 <button
                   type="button"
-                  className={`need-card interactive-card ${isSceneRelated(scene["場景ID"]) ? "is-related" : ""} ${isSceneMuted(scene["場景ID"]) ? "is-muted" : ""}`}
+                  className="need-card interactive-card"
                   key={scene["場景ID"]}
                   onClick={() => setOpenScene(scene["場景ID"])}
                   aria-label={`展開${scene["核心場景"]}完整場景需求`}
-                  style={scenarioStyle}
                 >
                   <ul>
                     {compactNeed(scene["場景ID"], summaryFor(scene["場景ID"]), scene["場景通用需求（報告2-2原文）"]).map((item) => (
@@ -878,9 +504,6 @@ function MainContent() {
                     <DataCard
                       key={`${scene["場景ID"]}-${groupId}`}
                       content={content}
-                      muted={isRecordMuted(record)}
-                      related={isRecordRelated(record)}
-                      scenarioColor={activeScenario ? SCENARIO_COLORS[activeScenario] : undefined}
                       layoutStyle={{ gridColumn: sceneIndex + 2, gridRow: 1 }}
                       interactive
                       showArrow
@@ -908,9 +531,8 @@ function MainContent() {
             >
               {scenes.map((scene) => (
                 <div
-                  className={`provider-card ${isSceneRelated(scene["場景ID"]) ? "is-related" : ""} ${isSceneMuted(scene["場景ID"]) ? "is-muted" : ""}`}
+                  className="provider-card"
                   key={scene["場景ID"]}
-                  style={scenarioStyle}
                 >
                   <strong>{scene["主要服務提供者"]}</strong>
                   <span>{scene["服務內容"]}</span>
@@ -921,9 +543,8 @@ function MainContent() {
             <FlowRow label="需求痛點" className="provider-row pain-row">
               {scenes.map((scene) => (
                 <div
-                  className={`provider-card pain-card ${isSceneRelated(scene["場景ID"]) ? "is-related" : ""} ${isSceneMuted(scene["場景ID"]) ? "is-muted" : ""}`}
+                  className="provider-card pain-card"
                   key={scene["場景ID"]}
-                  style={scenarioStyle}
                 >
                   <ul>
                     {splitLines(scene["服務端共通痛點"]).map((item) => <li key={item}>{item}</li>)}
@@ -944,9 +565,6 @@ function MainContent() {
                     <DataCard
                       key={`${scene["場景ID"]}-provider-${groupId}`}
                       content={record?.["服務端挑戰／考量重點（AI草稿）"]}
-                      muted={isRecordMuted(record)}
-                      related={isRecordRelated(record)}
-                      scenarioColor={activeScenario ? SCENARIO_COLORS[activeScenario] : undefined}
                       provider
                     />
                   );
@@ -956,11 +574,11 @@ function MainContent() {
 
             {showPetSpeciesRows && renderPetRows("服務端挑戰／考量重點（AI草稿）", true)}
           </div>
-        </div>
+        </HorizontalScroll>
       </section>
 
       <footer className="wrap footer">
-        <p>選擇族群展開需求　｜　選擇關鍵情境聚焦對應內容　｜　再按一次取消　｜　Esc 關閉詳情</p>
+        <p>選擇族群展開需求　｜　再按一次取消　｜　點選需求卡查看完整內容　｜　Esc 關閉詳情</p>
         <div>
           <span className="footer-team">打包一個家：未來生活的防災避難創新設計</span>
         </div>
@@ -1071,115 +689,7 @@ function MainContent() {
         </div>
       )}
 
-      {activeChallenge && activeScenarioData && (
-        <div className="modal-veil case-modal-veil" role="presentation" onMouseDown={(event) => {
-          if (event.target === event.currentTarget) setActiveChallenge(null);
-        }}>
-          <article
-            className="case-modal"
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="case-modal-title"
-            style={scenarioStyle}
-          >
-            <div className="case-modal-topline">
-              <div>
-                <span>{activeScenarioData["情境名稱"]}</span>
-                <span>{contextStatusSelected ? "背景與現況" : "設計挑戰"}</span>
-              </div>
-              <button type="button" onClick={() => setActiveChallenge(null)} aria-label="關閉現場與案例">×</button>
-            </div>
-            <div className="case-modal-content">
-              <div className="case-panel-heading">
-                <div>
-                  <p>{contextStatusSelected ? "現況觀察" : "現場與案例"}</p>
-                  <h2 id="case-modal-title">{activeChallenge}</h2>
-                </div>
-              </div>
-              {activeChallengeDescription && (
-                <p className="challenge-summary">{activeChallengeDescription}</p>
-              )}
-              {activeCases.length > 0 ? (
-                <div className="case-grid">
-                  {activeCases.map((record) => (
-                    <article className="case-card" key={record["素材ID"]}>
-                      <CaseMediaGallery record={record} />
-                      <div className="case-card-body">
-                        <div className="case-meta">
-                          <span>{contextStatusSelected ? "現況案例" : record["內容層級"]}</span>
-                        </div>
-                        <h3>{record["卡片標題"]}</h3>
-                        <p>{record["一句說明（網站草稿）"]}</p>
-                        {record["與設計挑戰的關聯"] && (
-                          <p className="case-relation">{record["與設計挑戰的關聯"]}</p>
-                        )}
-                        {record["來源標示（網站）"] && (
-                          <p className="case-source">來源：{record["來源標示（網站）"]}</p>
-                        )}
-                        {record["外部來源URL"] && (
-                          <a href={record["外部來源URL"]} target="_blank" rel="noreferrer">查看原始來源 ↗</a>
-                        )}
-                      </div>
-                    </article>
-                  ))}
-                </div>
-              ) : (
-                <p className="case-empty">目前沒有可對應這項挑戰的案例卡。</p>
-              )}
-            </div>
-          </article>
-        </div>
-      )}
-
     </main>
-  );
-}
-
-function CaseMediaGallery({ record }: { record: MediaRecord }) {
-  const [index, setIndex] = useState(0);
-  const media = CASE_MEDIA[record["素材ID"]] ?? (
-    record["媒體URL"]
-      ? [{ src: normalizeMediaUrl(record["媒體URL"]), alt: record["卡片標題"] }]
-      : []
-  );
-  if (!media.length) return null;
-  const current = media[index] ?? media[0];
-
-  return (
-    <div className="case-media-gallery">
-      <figure>
-        {current.kind === "drive-video" || current.kind === "youtube-video" ? (
-          <iframe
-            src={current.src}
-            title={current.alt}
-            loading="lazy"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
-            allowFullScreen
-          />
-        ) : (
-          <img src={current.src} alt={current.alt} loading="lazy" />
-        )}
-      </figure>
-      {media.length > 1 && (
-        <div className="case-media-nav" aria-label={`${record["卡片標題"]}圖片切換`}>
-          <button
-            type="button"
-            onClick={() => setIndex((index - 1 + media.length) % media.length)}
-            aria-label="上一張圖片"
-          >
-            ←
-          </button>
-          <span>{index + 1} / {media.length}</span>
-          <button
-            type="button"
-            onClick={() => setIndex((index + 1) % media.length)}
-            aria-label="下一張圖片"
-          >
-            →
-          </button>
-        </div>
-      )}
-    </div>
   );
 }
 
@@ -1202,9 +712,8 @@ function FlowRow({
 
 function DataCard({
   content,
-  muted,
-  related,
-  scenarioColor,
+  muted = false,
+  related = false,
   provider = false,
   className = "",
   layoutStyle,
@@ -1218,9 +727,8 @@ function DataCard({
   onBlur,
 }: {
   content?: string;
-  muted: boolean;
-  related: boolean;
-  scenarioColor?: string;
+  muted?: boolean;
+  related?: boolean;
   provider?: boolean;
   className?: string;
   layoutStyle?: React.CSSProperties;
@@ -1234,7 +742,6 @@ function DataCard({
   onBlur?: React.FocusEventHandler<HTMLButtonElement>;
 }) {
   const style = {
-    ...(scenarioColor ? { "--scenario-color": scenarioColor } : {}),
     ...layoutStyle,
   } as React.CSSProperties;
   const classes = `data-card ${provider ? "provider-data-card" : ""} ${interactive ? "audience-detail-card" : ""} ${className} ${related ? "is-related" : ""} ${muted ? "is-muted" : ""} ${!content ? "is-empty" : ""}`;
@@ -1283,5 +790,28 @@ function DataCard({
 }
 
 export default function Home() {
+  const [hashRoute, setHashRoute] = useState("");
+
+  useEffect(() => {
+    function syncRoute() {
+      setHashRoute(window.location.hash);
+      window.scrollTo({ top: 0, behavior: "instant" });
+    }
+    syncRoute();
+    window.addEventListener("hashchange", syncRoute);
+    return () => window.removeEventListener("hashchange", syncRoute);
+  }, []);
+
+  if (hashRoute.startsWith("#/scenarios")) {
+    const scenarioId = hashRoute.split("/")[2] || null;
+    return (
+      <ScenarioExperience
+        scenarioId={scenarioId}
+        onSelect={(id) => { window.location.hash = id ? `#/scenarios/${id}` : "#/scenarios"; }}
+        onBack={() => { window.location.hash = ""; }}
+      />
+    );
+  }
+
   return <MainContent />;
 }
