@@ -63,11 +63,21 @@ const SCENARIO_TITLE_LINES: Record<string, string[]> = {
   K04: ["災時海量物資的", "敏捷分類與配給系統"],
 };
 
+const SCENE_NAME_LINES: Record<string, string[]> = {
+  C01: ["物資儲備", "空間收納"],
+  C02: ["教育推行", "減災演練"],
+  C03: ["多元儲備", "配給發放"],
+  C04: ["舒適睡眠", "彈性屏障"],
+  C05: ["應急衛廁", "環境維護"],
+  C06: ["社群連結", "心理撫慰"],
+  C07: ["物資循環", "中繼安置"],
+};
+
 const RELATION_LABEL_LINES: Record<string, string[]> = {
   K01: ["寵物家庭需求", "中小型犬／貓／特寵"],
   K02: ["高齡者需求"],
   K03: ["高齡者／親子家庭", "多元文化者需求"],
-  K04: ["各族群特殊物資需求"],
+  K04: ["各族群", "特殊物資需求"],
 };
 
 const BUNDLED_MEDIA: Record<string, CaseMedia[]> = {
@@ -399,7 +409,11 @@ export default function ScenarioExperience({
                   return (
                     <div className="v2-matrix-scene" key={scene["場景ID"]}>
                       <span>{domain}</span>
-                      <strong>{name}</strong>
+                      <strong>
+                        {(SCENE_NAME_LINES[scene["場景ID"]] ?? [name]).map((line) => (
+                          <span key={line}>{line}</span>
+                        ))}
+                      </strong>
                     </div>
                   );
                 })}
@@ -418,10 +432,12 @@ export default function ScenarioExperience({
               return (
                 <div className="v2-matrix-data-row" style={style} key={id}>
                   <div className="v2-matrix-scenario-title">
-                    <span>
-                      {(SCENARIO_TITLE_LINES[id] ?? [scenario["情境名稱"]]).map((line) => (
-                        <span className="v2-matrix-title-line" key={line}>{line}</span>
-                      ))}
+                    <span className="v2-matrix-scenario-inner">
+                      <span className="v2-matrix-scenario-copy">
+                        {(SCENARIO_TITLE_LINES[id] ?? [scenario["情境名稱"]]).map((line) => (
+                          <span className="v2-matrix-title-line" key={line}>{line}</span>
+                        ))}
+                      </span>
                     </span>
                   </div>
                   <button
