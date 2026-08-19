@@ -56,11 +56,18 @@ const OVERVIEW_PHASES = [
   { label: "中長期收容與復原期", start: 8, span: 1 },
 ];
 
-const RELATION_LABELS: Record<string, string> = {
-  K01: "寵物家庭需求／中小型犬／貓／特寵",
-  K02: "高齡者需求",
-  K03: "高齡者／親子家庭／多元文化者需求",
-  K04: "各族群特殊物資需求",
+const SCENARIO_TITLE_LINES: Record<string, string[]> = {
+  K01: ["寵物家庭的避難與安置：", "避難所、車宿或帳棚"],
+  K02: ["高齡者舒適與安全的", "睡眠環境"],
+  K03: ["不同族群安全與舒適的", "如廁工具"],
+  K04: ["災時海量物資的", "敏捷分類與配給系統"],
+};
+
+const RELATION_LABEL_LINES: Record<string, string[]> = {
+  K01: ["寵物家庭需求", "中小型犬／貓／特寵"],
+  K02: ["高齡者需求"],
+  K03: ["高齡者／親子家庭", "多元文化者需求"],
+  K04: ["各族群特殊物資需求"],
 };
 
 const BUNDLED_MEDIA: Record<string, CaseMedia[]> = {
@@ -410,7 +417,13 @@ export default function ScenarioExperience({
               } as React.CSSProperties;
               return (
                 <div className="v2-matrix-data-row" style={style} key={id}>
-                  <div className="v2-matrix-scenario-title"><span>{scenario["情境名稱"]}</span></div>
+                  <div className="v2-matrix-scenario-title">
+                    <span>
+                      {(SCENARIO_TITLE_LINES[id] ?? [scenario["情境名稱"]]).map((line) => (
+                        <span className="v2-matrix-title-line" key={line}>{line}</span>
+                      ))}
+                    </span>
+                  </div>
                   <button
                     type="button"
                     className="v2-matrix-relation"
@@ -419,7 +432,11 @@ export default function ScenarioExperience({
                     aria-label={`查看${scenario["情境名稱"]}完整內容`}
                   >
                     <span className="v2-relation-line" aria-hidden="true" />
-                    <strong>{RELATION_LABELS[id]}</strong>
+                    <strong>
+                      {(RELATION_LABEL_LINES[id] ?? []).map((line) => (
+                        <span key={line}>{line}</span>
+                      ))}
+                    </strong>
                     <span className="v2-relation-arrow" aria-hidden="true">↗</span>
                   </button>
                 </div>
