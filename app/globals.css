@@ -465,8 +465,8 @@ button:focus-visible, a:focus-visible, select:focus-visible, summary:focus-visib
   .v2-detail-head { padding-top: 16px; padding-bottom: 22px; }
   .v2-detail-head > .site-navigation { margin-bottom: 26px; }
   .v2-overview { padding-top: 16px; padding-bottom: 6px; }
-  .v2-matrix-scroll { margin-inline: -14px; padding: 0 14px 14px; scroll-padding-left: 336px; }
-  .v2-matrix-corner, .v2-matrix-scenario-title { left: 0; }
+  .v2-matrix-scroll { margin-inline: -14px; padding: 0 14px 14px; scroll-padding-left: 14px; touch-action: pan-x; -webkit-overflow-scrolling: touch; }
+  .v2-matrix-corner, .v2-matrix-scenario-title { position: relative; left: auto; z-index: 1; }
   .v2-matrix-scenario-title { padding: 15px; }
   .v2-matrix-relation { width: 100%; }
   .v2-scenario-rail { grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: min(86vw, 390px); margin-inline: -14px; padding: 0 14px 14px; }
@@ -492,7 +492,7 @@ button:focus-visible, a:focus-visible, select:focus-visible, summary:focus-visib
   .v2-section-heading h2 { font-size: 25px; }
   .v2-overview-card { padding: 19px; }
   .v2-relation-matrix { --v2-label-column: 292px; min-width: 1328px; }
-  .v2-matrix-scroll { scroll-padding-left: 298px; }
+  .v2-matrix-scroll { scroll-padding-left: 14px; }
   .v2-matrix-corner { padding: 10px; font-size: 16px; }
   .v2-matrix-scenario-title { padding: 7px 12px; }
   .v2-matrix-scenario-inner { width: 264px; gap: 12px; }
